@@ -42,27 +42,27 @@ services:
       restart_policy:
         condition: on-failure
     restart: unless-stopped
-  metabase:
-      container_name: tonnftscan.metabase
-      build: ./metabase
-      volumes:
-        - ./var:/var
-        - ./.env:/.env
-      environment:
-        MB_JETTY_PORT: 8080
-        MB_DB_TYPE: postgres
-        MB_DB_DBNAME: ${METABASE_DB}
-        MB_DB_PORT: 5432
-        MB_DB_USER: ${POSTGRES_USER}
-        MB_DB_PASS: ${POSTGRES_PASSWORD}
-        MB_DB_HOST: db
-      depends_on:
-        - db
-      links:
-        - db
-      env_file: .env
-      ports:
-        - "8080:8080"
-      deploy:
-        restart_policy:
-          condition: on-failure
+#  metabase:
+#      container_name: tonnftscan.metabase
+#      build: ./metabase
+#      volumes:
+#        - ./var:/var
+#        - ./.env:/.env
+#      environment:
+#        MB_JETTY_PORT: 8080
+#        MB_DB_TYPE: postgres
+#        MB_DB_DBNAME: ${METABASE_DB}
+#        MB_DB_PORT: 5432
+#        MB_DB_USER: ${POSTGRES_USER}
+#        MB_DB_PASS: ${POSTGRES_PASSWORD}
+#        MB_DB_HOST: db
+#      depends_on:
+#        - db
+#      links:
+#        - db
+#      env_file: .env
+#      ports:
+#        - "8080:8080"
+#      deploy:
+#        restart_policy:
+#          condition: on-failure
