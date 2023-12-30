@@ -17,7 +17,7 @@ jobs:
             cd tonnftscan
             git pull
             git reset origin/main --hard
-            COMMIT_MESSAGE=$(git log -1 origin/main --oneline --pretty=%B)
+            COMMIT_MESSAGE=$(git log -1 origin/master --oneline --pretty=%B)
             REPO_NAME=$(basename -s .git `git config --get remote.origin.url`)
             DEPLOYMENT_STARTED_TELEGRAM_MESSAGE="Deployment of <b>$REPO_NAME</b> starting. Commit message: <b>$COMMIT_MESSAGE</b>"
             DEPLOYMENT_STARTED_HTML_ESCAPED_TELEGRAM_MESSAGE=${DEPLOYMENT_STARTED_TELEGRAM_MESSAGE//" "/"%20"}
