@@ -14,7 +14,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            cd para2022
+            cd tonnftscan
             git pull
             git reset origin/main --hard
             COMMIT_MESSAGE=$(git log -1 origin/main --oneline --pretty=%B)
@@ -26,13 +26,11 @@ jobs:
             curl "$DEPLOYMENT_STARTED_URL"
             docker system prune --force
             docker compose -f docker-compose.production.yaml build
-            docker stop para2022.backend
-            docker stop para2022.frontend
-            docker container rm para2022.backend
-            docker container rm para2022.frontend
+            docker stop tonnftscan.app
+            docker container rm tonnftscan.app
             docker compose -f docker-compose.production.yaml up -d
-            ufw-docker allow para2022.nginx 443
-            ufw-docker allow para2022.nginx 80
+            ufw-docker allow tonnftscan.nginx 443
+            ufw-docker allow tonnftscan.nginx 80
             COMMIT_HASH=$(git rev-parse --short HEAD)
             TELEGRAM_MESSAGE="Deployment of <b>$REPO_NAME</b> to staging completed. Commit hash: <b>$COMMIT_HASH</b>. Commit message: <b>$COMMIT_MESSAGE</b>"
             HTML_ESCAPED_TELEGRAM_MESSAGE=${TELEGRAM_MESSAGE//" "/"%20"}
