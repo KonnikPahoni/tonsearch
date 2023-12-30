@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Collection{% endblock title %}
+
+{% block head %}
+
+
+{% endblock head %}
+
+{% block content %}
+
+    <div class="container text-center">
+        <h1 class="mt-5 text-white">List of TON NFT collections</h1>
+        <p class="lead text-white">Total collections: {{ total_collections }}</p>
+    </div>
+
+    <div class="container-flex d-flex flex-wrap px-5">
+
+        {% for collection in collections %}
+            <a class="collection-card-link" href="{{ site_url }}/collection/{{ collection.user_friendly_id }}">
+                <div class="card my-3 mx-3 collection-card">
+                    <img src="{{ collection.image }}" class="card-img-top tile-img" alt="{{ collection.name }}">
+                    <p class="card-text text-muted mx-3 mt-3">{{ collection.nfts_count }} items</p>
+                    <div class="card-body px-3 pb-3 pt-0">
+                        <h5 class="card-text">{{ collection.name }}</h5>
+                    </div>
+                </div>
+            </a>
+        {% endfor %}
+
+    </div>
+
+    <div class="container d-flex my-3">
+        <div class="container d-flex justify-content-center">
+            <nav aria-label="Collections pagination">
+
+                <div class="container text-center">
+                    <p class="text-white">Page {{ page_number }} of {{ num_of_pages }}</p>
+                </div>
+
+                <ul class="pagination text-ton">
+                    <li class="page-item {% if previous_page_number is None %} disabled {% else %} {% endif %}">
+                        <a class="page-link" href="/collections/{{ previous_page_number }}">⬅️</a>
+                    </li>
+                    {% if previous_page_number is None %} {% else %}
+                        <li class="page-item"><a class="page-link"
+                                                 href="/collections/{{ previous_page_number }}">{{ previous_page_number }}</a>
+                        </li> {% endif %}
+
+                    <li class="page-item active" aria-current="page">
+                        <a class="page-link" href="/collections/{{ page_number }}">{{ page_number }}</a>
+                    </li>
+
+
+                    {% if next_page_number is None %} {% else %}
+                        <li class="page-item"><a class="page-link"
+                                                 href="/collections/{{ next_page_number }}">{{ next_page_number }}</a>
+                        </li>{% endif %}
+
+
+                    <li class="page-item {% if next_page_number is None %} disabled {% else %} {% endif %}">
+                        <a class="page-link" href="/collections/{{ next_page_number }}">➡️</a>
+                    </li>
+                </ul>
+
+            </nav>
+
+
+        </div>
+    </div>
+{% endblock content %}

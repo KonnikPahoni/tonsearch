@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}TON NFT Search{% endblock title %}
+
+{% block head %}
+
+
+{% endblock head %}
+
+{% block content %}
+
+    <div class="container">
+        <h1 class="text-center mt-5 text-white">Trending NFTs</h1>
+    </div>
+
+    <div class="container-flex d-flex flex-wrap justify-content-around px-5">
+
+        {% for collection in collections %}
+            <a class="collection-card-link" href="{{ site_url }}/collection/{{ collection.user_friendly_id }}">
+            <div class="card my-3 mx-1 collection-card">
+                <img src="{{ collection.image }}" class="card-img-top tile-img" alt="{{ collection.name }}">
+                <p class="card-text text-muted mx-3 mt-3">{{ collection.nfts_count }} items</p>
+                <div class="card-body px-3 pb-3 pt-0">
+                    <h5 class="card-text">{{ collection.name }}</h5>
+                </div>
+            </div>
+            </a>
+        {% endfor %}
+
+    </div>
+
+{% endblock content %}

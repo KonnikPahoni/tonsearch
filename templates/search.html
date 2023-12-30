@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Search{% endblock title %}
+
+{% block head %}
+
+
+{% endblock head %}
+
+{% block content %}
+
+    <div class="container text-center">
+        <h1 class="text-center mt-5 text-white">Search results</h1>
+        <p class="lead text-white">{{ collections_count }} collections, {{ nfts_count }} NFTs, {{ wallets_count }}
+            wallets found</p>
+    </div>
+
+    <div class="container-flex d-flex flex-wrap justify-content-around px-5">
+
+        {% for collection in collections %}
+            <a class="collection-card-link" href="{{ site_url }}/collection/{{ collection.user_friendly_id }}">
+                <div class="card my-3 mx-1 collection-card">
+                    <img src="{{ collection.image }}" class="card-img-top tile-img" alt="{{ collection.name }}">
+
+                    <p class="card-text text-muted mx-3 mt-3">{{ collection.nfts_count }} items <span class="badge badge-success">Collection</span></p>
+                    <div class="card-body px-3 pb-3 pt-0">
+                        <h5 class="card-text">{{ collection.name }}</h5>
+                    </div>
+                </div>
+            </a>
+        {% endfor %}
+
+            {% for nft in nfts %}
+            <a class="collection-card-link" href="{{ site_url }}/nft/{{ nft.user_friendly_id }}">
+                <div class="card my-3 mx-1 collection-card">
+                    <img src="{{ nft.image }}" class="card-img-top tile-img" alt="{{ nft.name }}">
+
+                    <p class="card-text text-muted mx-3 mt-3">2 transactions <span class="badge badge-primary">NFT</span></p>
+                    <div class="card-body px-3 pb-3 pt-0">
+                        <h5 class="card-text">{{ nft.name }}</h5>
+                    </div>
+                </div>
+            </a>
+        {% endfor %}
+
+    </div>
+
+{% endblock content %}

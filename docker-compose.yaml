@@ -1,0 +1,68 @@
+version: "3.9"
+
+services:
+  db:
+    container_name: tonnftscan.db
+    image: postgres:13
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: letmein
+      POSTGRES_DB: tonnftscan
+    volumes:
+      - ./var/postgresql:/var/lib/postgresql/data
+    env_file:
+      - .env
+    deploy:
+      restart_policy:
+        condition: on-failure
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+  app:
+    container_name: tonnftscan.app
+    environment:
+      DJANGO_SETTINGS_MODULE: tonnftscan.settings
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: tonnftscan_image
+    command: sh -c "python manage.py migrate && python manage.py collectstatic --noinput && /usr/local/bin/gunicorn tonnftscan.wsgi:application --reload --log-level debug --bind 0.0.0.0:8001"
+    volumes:
+      - ./var:/var
+      - ./tonnftscan:/tonnftscan
+      - ./templates:/templates
+      - ./.env:/.env
+    links:
+      - db
+    depends_on:
+      - db
+    ports:
+      - "127.0.0.1:8001:8001"
+    deploy:
+      restart_policy:
+        condition: on-failure
+    restart: unless-stopped
+  metabase:
+      container_name: tonnftscan.metabase
+      build: ./metabase
+      volumes:
+        - ./var:/var
+        - ./.env:/.env
+      environment:
+        MB_JETTY_PORT: 8080
+        MB_DB_TYPE: postgres
+        MB_DB_DBNAME: ${METABASE_DB}
+        MB_DB_PORT: 5432
+        MB_DB_USER: ${POSTGRES_USER}
+        MB_DB_PASS: ${POSTGRES_PASSWORD}
+        MB_DB_HOST: db
+      depends_on:
+        - db
+      links:
+        - db
+      env_file: .env
+      ports:
+        - "8080:8080"
+      deploy:
+        restart_policy:
+          condition: on-failure

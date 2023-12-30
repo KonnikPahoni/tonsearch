@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Wallet{% endblock title %}
+
+{% block head %}
+
+
+{% endblock head %}
+
+{% block content %}
+
+    <div class="container-flex">
+
+        <div class="container bg-white px-5 pb-5 pt-3 center-container my-4">
+            <div class="container text-right">
+                <p class="text-muted my-2">Last fetched: {{ last_fetched_at }}</p>
+            </div>
+
+            <div class="container mt-4">
+                <span class="badge badge-secondary">Wallet</span>
+                {% if name is None %}
+                    <h1 class="display-4 mb-3 break-word">{{ user_friendly_id }}</h1>
+                {% else %}
+                    <h1 class="display-4 mb-3">{{ name }}</h1>
+                    <span class="lead text-muted">User-friendly wallet ID: <b>{{ user_friendly_id }}</b></span>
+                {% endif %}
+
+                <br>
+                <span class="lead text-muted">HEX wallet ID: <b>{{ hex_id }}</b></span>
+        o    </div>
+
+            {% if icon is not None %}
+                <div class="container my-4 text-center">
+                    <div class="img-block mx-auto">
+                        <div class="text-center">
+                            <img src="{{ icon }}" alt="Wallet image" class="photo-img">
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+
+            <div class="container">
+                <h3 class="mb-3 text-muted">Meta information</h3>
+                <p class="lead">Verified: <b>{{ verified }}</b></p>
+                <p class="lead">Approved by: <b>{{ approved_by }}</b></p>
+                <p class="lead">Attributes: <b>{{ attributes }}</b></p>
+                <p class="lead">Sale: <b>{{ sale }}</b></p>
+            </div>
+
+            <div class="container">
+                <h2 class="mb-3 text-muted">Description</h2>
+                <p class="lead">{{ description }}
+
+                    {% if marketplace is not None %}
+                        <br><br>
+                        This collection was created via the {{ marketplace }} marketplace.
+
+                    {% else %}
+
+                    {% endif %}
+
+                </p>
+
+            </div>
+
+        </div>
+
+{% endblock content %}

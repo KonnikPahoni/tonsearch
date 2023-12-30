@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Wallets{% endblock title %}
+
+{% block head %}
+
+
+{% endblock head %}
+
+{% block content %}
+
+    <div class="container text-center">
+        <h1 class="text-center mt-5 text-white">List of TON NFT holders</h1>
+        <p class="lead text-white">Total NFT holders: {{ total_wallets }}</p>
+    </div>
+
+    <div class="container-flex d-flex flex-wrap justify-content-around px-5">
+
+        {% for wallet in wallets %}
+            <a class="collection-card-link" href="{{ site_url }}/wallet/{{ wallet.user_friendly_id }}">
+                <div class="card my-3 mx-1 collection-card">
+                    <img src="{{ wallet.icon }}" class="card-img-top tile-img" alt="{{ wallet.name }}">
+                    <p class="card-text text-muted mx-3 mt-3">Holds {{ wallet.nfts_count }} NFTs</p>
+                    <div class="card-body px-3 pb-3 pt-0">
+                        <h5 class="card-text">
+                            {% if wallet.name is None %}
+                                {{ wallet.user_friendly_id }}
+                            {% else %}
+                                {{ wallet.name }}
+                            {% endif %}
+                    </div>
+                </div>
+            </a>
+        {% endfor %}
+
+    </div>
+
+    <div class="container d-flex my-3">
+        <div class="container d-flex justify-content-center">
+            <nav aria-label="NFTs pagination">
+
+                <div class="container text-center">
+                    <p class="text-white">Page {{ page_number }} of {{ num_of_pages }}</p>
+                </div>
+
+                <ul class="pagination text-ton">
+                    <li class="page-item {% if previous_page_number is None %} disabled {% else %} {% endif %}">
+                        <a class="page-link" href="/wallets/{{ previous_page_number }}">⬅️</a>
+                    </li>
+                    {% if previous_page_number is None %} {% else %}
+                        <li class="page-item"><a class="page-link"
+                                                 href="/wallets/{{ previous_page_number }}">{{ previous_page_number }}</a>
+                        </li> {% endif %}
+
+                    <li class="page-item active" aria-current="page">
+                        <a class="page-link" href="/wallets/{{ page_number }}">{{ page_number }}</a>
+                    </li>
+
+
+                    {% if next_page_number is None %} {% else %}
+                        <li class="page-item"><a class="page-link"
+                                                 href="/wallets/{{ next_page_number }}">{{ next_page_number }}</a>
+                        </li>{% endif %}
+
+
+                    <li class="page-item {% if next_page_number is None %} disabled {% else %} {% endif %}">
+                        <a class="page-link" href="/wallets/{{ next_page_number }}">➡️</a>
+                    </li>
+                </ul>
+
+            </nav>
+
+
+        </div>
+    </div>
+
+{% endblock content %}

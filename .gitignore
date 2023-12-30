@@ -1,0 +1,7 @@
+.env
+.idea
+var
+/staticfiles/
+/.run/
+
+metabase/metabase.jar

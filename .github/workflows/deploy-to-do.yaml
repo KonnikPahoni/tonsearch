@@ -1,0 +1,41 @@
+name: Build and deploy to DO
+on:
+  push:
+    branches:
+      - main
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to DO
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd para2022
+            git pull
+            git reset origin/main --hard
+            COMMIT_MESSAGE=$(git log -1 origin/main --oneline --pretty=%B)
+            REPO_NAME=$(basename -s .git `git config --get remote.origin.url`)
+            DEPLOYMENT_STARTED_TELEGRAM_MESSAGE="Deployment of <b>$REPO_NAME</b> starting. Commit message: <b>$COMMIT_MESSAGE</b>"
+            DEPLOYMENT_STARTED_HTML_ESCAPED_TELEGRAM_MESSAGE=${DEPLOYMENT_STARTED_TELEGRAM_MESSAGE//" "/"%20"}
+            DEPLOYMENT_STARTED_URL="https://api.telegram.org/bot${{ secrets.TELEGRAM_API_KEY }}/sendMessage?parse_mode=HTML&chat_id=${{ secrets.TELEGRAM_SUPPORT_CHAT_ID }}&text=${DEPLOYMENT_STARTED_HTML_ESCAPED_TELEGRAM_MESSAGE}"
+            echo "$DEPLOYMENT_STARTED_URL"
+            curl "$DEPLOYMENT_STARTED_URL"
+            docker system prune --force
+            docker compose -f docker-compose.production.yaml build
+            docker stop para2022.backend
+            docker stop para2022.frontend
+            docker container rm para2022.backend
+            docker container rm para2022.frontend
+            docker compose -f docker-compose.production.yaml up -d
+            ufw-docker allow para2022.nginx 443
+            ufw-docker allow para2022.nginx 80
+            COMMIT_HASH=$(git rev-parse --short HEAD)
+            TELEGRAM_MESSAGE="Deployment of <b>$REPO_NAME</b> to staging completed. Commit hash: <b>$COMMIT_HASH</b>. Commit message: <b>$COMMIT_MESSAGE</b>"
+            HTML_ESCAPED_TELEGRAM_MESSAGE=${TELEGRAM_MESSAGE//" "/"%20"}
+            URL="https://api.telegram.org/bot${{ secrets.TELEGRAM_API_KEY }}/sendMessage?parse_mode=HTML&chat_id=${{ secrets.TELEGRAM_DEV_CHAT_ID }}&text=${HTML_ESCAPED_TELEGRAM_MESSAGE}"
+            echo "$URL"
+            curl "$URL"
