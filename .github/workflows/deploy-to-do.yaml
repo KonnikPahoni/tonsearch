@@ -14,7 +14,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            cd tonnftscan
+            cd tonsearch
             git pull
             git reset origin/main --hard
             COMMIT_MESSAGE=$(git log -1 origin/master --oneline --pretty=%B)
