@@ -5,7 +5,20 @@
 {% block title %}NFT{% endblock title %}
 
 {% block head %}
+    <link rel="canonical" href="{{ site_url }}/nft/{{ user_friendly_id }}"/>
 
+    <meta
+            property="og:title"
+            content="{{ name }}">
+    <meta
+            name="description"
+            content="{{ description }}">
+    <meta property="og:description"
+          content="{{ description }}">
+
+    <meta property="og:url" content="{{ site_url }}/nft/{{ user_friendly_id }}">
+
+    <meta property="og:image" content="{{ image }}">
 
 {% endblock head %}
 
@@ -66,7 +79,8 @@
             </div>
 
             <div class="container">
-                <a class="navlink" href="{{ site_url }}/collection/{{ collection.user_friendly_id }}"><h3 class="mb-4 d-inline-block navlink">Collection</h3></a>
+                <a class="navlink" href="{{ site_url }}/collection/{{ collection.user_friendly_id }}"><h3
+                        class="mb-4 d-inline-block navlink">Collection</h3></a>
                 <p class="lead">Collection name: <b>{{ collection.name }}</b></p>
                 <p class="lead">Collection description: <b>{{ collection.description }}</b></p>
                 <p class="lead">NFTs in collection: <b>{{ collection.nfts_count }}</b></p>
