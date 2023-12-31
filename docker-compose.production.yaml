@@ -37,7 +37,7 @@ services:
     depends_on:
       - db
     ports:
-      - "127.0.0.1:8008:8001"
+      - "8008:8001"
     deploy:
       restart_policy:
         condition: on-failure
