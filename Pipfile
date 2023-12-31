@@ -7,7 +7,7 @@ name = "pypi"
 # Keep all requirements in requirements.txt
 psycopg2-binary = "==2.9.9"
 requests = "==2.31.0"
-django = "==5.0"
+django = "==4.2.8"
 django-environ = "==0.11.2"
 djangorestframework = "==3.14.0"
 djangorestframework-api-key = "==2.2.0"
