@@ -24,15 +24,14 @@ METABASE_EMBED_KEY = env("METABASE_EMBED_KEY")
 
 METABASE_SITE_URL = "http://localhost:8080"
 
-SITE_URL = "http://localhost:8001"
+SITE_URL = env("SITE_URL")
 
 if ENV == "production":
-    CSRF_TRUSTED_ORIGINS = ["https://bitcapsule.org"]
-elif ENV == "staging":
-    CSRF_TRUSTED_ORIGINS = ["https://staging.bitcapsule.org"]
+    CSRF_TRUSTED_ORIGINS = ["https://tonsearch.org"]
+    ALLOWED_HOSTS = ["tonsearch.org", "161.35.196.15"]
 else:
     ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
-    CSRF_TRUSTED_ORIGINS = ["http://localhost:8001", "http://127.0.0.1:8001"]
+    CSRF_TRUSTED_ORIGINS = ["http://localhost:8008", "http://127.0.0.1:8001"]
 
 INSTALLED_APPS = [
     "django.contrib.admin",

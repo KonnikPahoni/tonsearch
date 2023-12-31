@@ -21,6 +21,6 @@ pyjwt = "==2.8.0"
 tonsdk = "==1.0.13"
 
 [scripts]
-start = "pipenv run python manage.py runserver 8001"
+start = "pipenv run python manage.py runserver 8008"
 makemigrations = "pipenv run python manage.py makemigrations"
 migrate = "pipenv run python manage.py migrate"

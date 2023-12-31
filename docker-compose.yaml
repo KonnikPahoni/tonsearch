@@ -26,7 +26,7 @@ services:
       context: .
       dockerfile: Dockerfile
     image: tonnftscan_image
-    command: sh -c "python manage.py migrate && python manage.py collectstatic --noinput && /usr/local/bin/gunicorn tonnftscan.wsgi:application --reload --log-level debug --bind 0.0.0.0:8001"
+    command: sh -c "python manage.py migrate && python manage.py collectstatic --noinput && /usr/local/bin/gunicorn tonnftscan.wsgi:application --reload --log-level debug --bind 0.0.0.0:8008"
     volumes:
       - ./var:/var
       - ./tonnftscan:/tonnftscan
@@ -37,7 +37,7 @@ services:
     depends_on:
       - db
     ports:
-      - "127.0.0.1:8001:8001"
+      - "127.0.0.1:8008:8008"
     deploy:
       restart_policy:
         condition: on-failure

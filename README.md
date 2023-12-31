@@ -4,7 +4,7 @@ SQL database of TON NFTs.
 
 #### Useful links
 
-- Django admin: [http://localhost:8001/admin/](http://localhost:8001/admin/).
+- Django admin: [http://localhost:8008/admin/](http://localhost:8001/admin/).
 
 ## Local development
 

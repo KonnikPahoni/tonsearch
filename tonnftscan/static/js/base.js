@@ -3,7 +3,7 @@ function performSearch() {
     var query = document.getElementById('searchInput').value;
 
     // Build the URL with the query parameter
-    var searchUrl = 'http://localhost:8001/search?query=' + encodeURIComponent(query);
+    var searchUrl = 'http://localhost:8008/search?query=' + encodeURIComponent(query);
 
     // Redirect to the search page
     window.location.href = searchUrl;

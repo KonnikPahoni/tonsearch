@@ -6,8 +6,8 @@ COPY requirements.txt /
 
 RUN pip3 install -r requirements.txt
 
-EXPOSE 8001
+EXPOSE 8008
 
 COPY . /
 
-CMD python manage.py collectstatic --noinput && python manage.py migrate && gunicorn tonnftscan.wsgi:application --bind 0.0.0.0:8001
+CMD python manage.py collectstatic --noinput && python manage.py migrate && gunicorn tonnftscan.wsgi:application --bind 0.0.0.0:8008
