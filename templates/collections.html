@@ -2,10 +2,24 @@
 
 {% load static %}
 
-{% block title %}Collection{% endblock title %}
+{% block title %}Trending TON NFT Collections{% endblock title %}
 
 {% block head %}
 
+    <link rel="canonical" href="{{ site_url }}/collections"/>
+
+    <meta
+            property="og:title"
+            content="Trending TON NFT Collections">
+    <meta
+            name="description"
+            content="Discover hot TON NFT collections! Dive into unique digital art. Explore now!">
+    <meta property="og:description"
+          content="Discover hot TON NFT collections! Dive into unique digital art. Explore now!">
+
+    <meta property="og:url" content="{{ site_url }}/collections">
+
+    <meta property="og:image" content="{% static 'thumbnail.png' %}">
 
 {% endblock head %}
 

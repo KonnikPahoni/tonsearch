@@ -5,14 +5,27 @@
 {% block title %}NFTs{% endblock title %}
 
 {% block head %}
+    <link rel="canonical" href="{{ site_url }}/nfts"/>
 
+    <meta
+            property="og:title"
+            content="Trending TON NFTs">
+    <meta
+            name="description"
+            content="Explore Telegram Open Network (TON) sought-after NFTs and curated editor's picks.">
+    <meta property="og:description"
+          content="Explore Telegram Open Network (TON) sought-after NFTs and curated editor's picks.">
+
+    <meta property="og:url" content="{{ site_url }}/nfts">
+
+    <meta property="og:image" content="{% static 'thumbnail.png' %}">
 
 {% endblock head %}
 
 {% block content %}
 
     <div class="container text-center">
-        <h1 class="text-center mt-5 text-white">List of TON NFTs</h1>
+        <h1 class="text-center mt-5 text-white">Trending TON NFTs</h1>
         <p class="lead text-white">Total NFTs: {{ total_nfts }}</p>
     </div>
 
