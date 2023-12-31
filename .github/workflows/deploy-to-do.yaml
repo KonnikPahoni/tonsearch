@@ -16,7 +16,7 @@ jobs:
           script: |
             cd tonsearch
             git pull
-            git reset origin/main --hard
+            git reset origin/master --hard
             COMMIT_MESSAGE=$(git log -1 origin/master --oneline --pretty=%B)
             REPO_NAME=$(basename -s .git `git config --get remote.origin.url`)
             DEPLOYMENT_STARTED_TELEGRAM_MESSAGE="Deployment of <b>$REPO_NAME</b> starting. Commit message: <b>$COMMIT_MESSAGE</b>"
