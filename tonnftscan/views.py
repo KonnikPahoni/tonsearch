@@ -43,6 +43,11 @@ class IndexView(APIView):
 
         context = {
             **get_base_context(),
+            "collections_num": Collection.objects.count(),
+            "nfts_num": NFT.objects.count(),
+            "wallets_num": Address.objects.filter(is_wallet=True, is_scam=False).count(),
+            "nfts_on_sale_num": NFT.objects.all().exclude(sale={}).count(),
+            "collections": Collection.objects.order_by("-created_at")[:8],
         }
 
         return HttpResponse(template.render(context, request))

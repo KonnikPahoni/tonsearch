@@ -16,7 +16,7 @@
         <p class="lead text-white">Total NFTs: {{ total_nfts }}</p>
     </div>
 
-    <div class="container-flex d-flex flex-wrap justify-content-around px-5">
+    <div class="container-flex d-flex flex-wrap justify-content-center px-5">
 
         {% for nft in nfts %}
             <a class="collection-card-link" href="{{ site_url }}/nft/{{ nft.user_friendly_id }}">

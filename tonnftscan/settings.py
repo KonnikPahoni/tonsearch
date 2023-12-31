@@ -35,7 +35,7 @@ if ENV == "production":
     ALLOWED_HOSTS = ["tonsearch.org", "161.35.196.15"]
 else:
     ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
-    CSRF_TRUSTED_ORIGINS = ["http://localhost:8008", "http://127.0.0.1:8001"]
+    CSRF_TRUSTED_ORIGINS = ["http://localhost:8008", "http://127.0.0.1:8008"]
 
 INSTALLED_APPS = [
     "django.contrib.admin",

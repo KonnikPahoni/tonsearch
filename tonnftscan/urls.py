@@ -1,5 +1,6 @@
 from django.urls import path
 from django.contrib import admin
+from django.views.decorators.cache import cache_page
 
 from tonnftscan.views import (
     IndexView,
@@ -14,7 +15,7 @@ from tonnftscan.views import (
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("", IndexView.as_view(), name="index"),
+    path("", cache_page(60 * 60 * 24)(IndexView.as_view()), name="index"),
     path("collections", CollectionsView.as_view(), name="collections"),
     path("collections/<int:page_number>", CollectionsView.as_view(), name="collections"),
     path("collection/<str:collection_id>", CollectionView.as_view(), name="collection"),
