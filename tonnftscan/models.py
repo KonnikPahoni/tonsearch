@@ -76,6 +76,10 @@ class Collection(models.Model):
     external_url = models.CharField(max_length=10000)
     last_fetched_at = models.DateTimeField(blank=True, null=True)
 
+    class Meta:
+        # Add birthday to the first sublist maybe if it causes problems?
+        ordering = ["address"]
+
     def __str__(self):
         return f"{self.name} ({self.address})"
 

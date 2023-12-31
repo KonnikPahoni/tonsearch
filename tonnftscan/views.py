@@ -42,7 +42,7 @@ class IndexView(APIView):
         iframeUrl = METABASE_SITE_URL + "/embed/dashboard/" + token + "#bordered=true&titled=true"
 
         context = {
-            "iframeUrl": iframeUrl,
+            **get_base_context(),
         }
 
         return HttpResponse(template.render(context, request))
