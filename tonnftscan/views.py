@@ -41,13 +41,17 @@ class IndexView(APIView):
 
         iframeUrl = METABASE_SITE_URL + "/embed/dashboard/" + token + "#bordered=true&titled=true"
 
+        collections_context = [
+            collection.get_context() for collection in Collection.objects.order_by("-created_at")[:8]
+        ]
+
         context = {
             **get_base_context(),
             "collections_num": Collection.objects.count(),
             "nfts_num": NFT.objects.count(),
             "wallets_num": Address.objects.filter(is_wallet=True, is_scam=False).count(),
             "nfts_on_sale_num": NFT.objects.all().exclude(sale={}).count(),
-            "collections": Collection.objects.order_by("-created_at")[:8],
+            "collections": collections_context,
         }
 
         return HttpResponse(template.render(context, request))

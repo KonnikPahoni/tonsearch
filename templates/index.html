@@ -5,8 +5,20 @@
 {% block title %}TON NFT Search{% endblock title %}
 
 {% block head %}
+    <link rel="canonical" href="{{ site_url }}"/>
 
+    <meta
+            property="og:title"
+            content="Telegram Open Network (TON) Blockchain Search Engine">
+    <meta
+            name="description"
+            content="Effortlessly navigate the Telegram Open Network (TON) blockchain with free-text search.">
+    <meta property="og:description"
+          content="Effortlessly navigate the Telegram Open Network (TON) blockchain with free-text search.">
 
+    <meta property="og:url" content="{{ site_url }}">
+
+    <meta property="og:image" content="{% static 'thumbnail.png' %}">
 
 {% endblock head %}
 
