@@ -350,7 +350,7 @@ class CollectionCoverView(APIView):
         collection = get_collection_for_address_service(collection_id)
 
         try:
-            return proxy_image_file_service(collection.cover_image)
+            return proxy_image_file_service(collection.cover_image, cover=True)
         except ValueError:
             return redirect(f"{SITE_URL}/staticfiles/default_cover.png")
 

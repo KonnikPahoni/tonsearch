@@ -76,20 +76,22 @@ def send_message_to_support_chat(message, tech_chat=False):
             bot.send_message(chat_id, message_part)
 
 
-def proxy_image_file_service(url: str):
+def proxy_image_file_service(url: str, cover=False):
     """
     Get filefield from the database.
     """
     logging.info(f"Proxying file from {url}")
+
+    default_image = "default_image.png" if cover is False else "default_cover.png"
 
     try:
         content = requests.get(url, timeout=5).content
         logging.info(f"Content size for {url}: {len(content)}")
     except Exception as e:
         logging.error(f"Could not get content for {url}: {str(e)}")
-        return redirect(f"{SITE_URL}/staticfiles/default_image.png")
+        return redirect(f"{SITE_URL}/staticfiles/{default_image}")
 
     if len(content) < 200:
-        return redirect(f"{SITE_URL}/staticfiles/default_image.png")
+        return redirect(f"{SITE_URL}/staticfiles/{default_image}")
 
     return HttpResponse(content, content_type="image/png")
