@@ -106,6 +106,7 @@ def fetch_collection_service(collection: Collection):
     """
     limit = 1000
     offset = 0
+    total_nfts = 0
 
     while True:
         time.sleep(1)
@@ -175,8 +176,10 @@ def fetch_collection_service(collection: Collection):
                     "approved_by": approved_by,
                 },
             )
+            total_nfts += 1
 
     collection.last_fetched_at = timezone.now()
+    collection.nfts_count = total_nfts
     collection.save()
 
 

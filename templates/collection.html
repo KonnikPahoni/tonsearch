@@ -45,7 +45,7 @@
             <div class="container my-4 text-center">
                 <div class="img-block mx-auto">
                     <div class="text-center">
-                        <img src="{{ image }}" alt="Collection image" class="photo-img">
+                        <img src="{{ site_url }}/collection/{{ user_friendly_id }}/image" alt="{{ name }}" class="photo-img">
 
                         {% if external_url is not None %}
                             <br>

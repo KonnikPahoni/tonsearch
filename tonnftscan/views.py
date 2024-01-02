@@ -1,6 +1,8 @@
 import logging
 
+from django.db.models import Count
 from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import redirect
 from django.urls import reverse
 from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
@@ -17,8 +19,8 @@ from tonnftscan.services import (
     search_nfts_service,
     search_wallets_service,
 )
-from tonnftscan.settings import METABASE_EMBED_KEY, METABASE_SITE_URL
-from tonnftscan.utils import get_base_context
+from tonnftscan.settings import METABASE_EMBED_KEY, METABASE_SITE_URL, SITE_URL
+from tonnftscan.utils import get_base_context, proxy_image_file_service
 
 
 class IndexView(APIView):
@@ -65,13 +67,12 @@ class CollectionsView(APIView):
         """
         Returns the collections page.
         """
-
         template = loader.get_template("collections.html")
         objects_per_page = 16
 
         base_context = get_base_context()
 
-        collections_filterset = Collection.objects.order_by("-created_at")
+        collections_filterset = Collection.objects.filter(last_fetched_at__isnull=False, nfts_count__gt=0)
 
         paginator = Paginator(collections_filterset, objects_per_page)
 
@@ -320,3 +321,19 @@ class SearchView(APIView):
         logging.info(f"Context for search: {context}")
 
         return HttpResponse(template.render(context, request))
+
+
+class CollectionImageView(APIView):
+    permission_classes = (AllowAny,)
+    http_method_names = ["get"]
+
+    def get(self, request, collection_id):
+        """
+        Returns the collection image.
+        """
+        collection = get_collection_for_address_service(collection_id)
+
+        try:
+            return proxy_image_file_service(collection.image)
+        except ValueError:
+            return redirect(f"{SITE_URL}/staticfiles/default_image.png")

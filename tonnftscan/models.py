@@ -75,6 +75,7 @@ class Collection(models.Model):
     cover_image = models.CharField(max_length=10000)
     external_url = models.CharField(max_length=10000)
     last_fetched_at = models.DateTimeField(blank=True, null=True)
+    nfts_count = models.IntegerField(default=0)
 
     class Meta:
         # Add birthday to the first sublist maybe if it causes problems?
@@ -139,7 +140,7 @@ class NFT(models.Model):
 
     address = models.CharField(max_length=255, primary_key=True)
     owner = models.ForeignKey(Address, on_delete=models.CASCADE, blank=True, null=True, related_name="nfts")
-    collection = models.ForeignKey(Collection, on_delete=models.CASCADE, blank=True, null=True)
+    collection = models.ForeignKey(Collection, on_delete=models.CASCADE, blank=True, null=True, related_name="nfts")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     name = models.CharField(max_length=2000, db_index=True)

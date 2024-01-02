@@ -1,5 +1,9 @@
 import logging
+
+import requests
 import telegram
+from django.http import HttpResponse
+from django.shortcuts import redirect
 from tonsdk.utils import Address
 
 from tonnftscan.settings import SITE_URL, ENV, TELEGRAM_TECH_CHAT_ID, TELEGRAM_SUPPORT_CHAT_ID, TELEGRAM_API_TOKEN
@@ -70,3 +74,22 @@ def send_message_to_support_chat(message, tech_chat=False):
         except Exception as e:
             logging.error(f"Could not send message to tech chat: {str(e)}. Retrying without ParseMode.HTML")
             bot.send_message(chat_id, message_part)
+
+
+def proxy_image_file_service(url: str):
+    """
+    Get filefield from the database.
+    """
+    logging.info(f"Proxying file from {url}")
+
+    try:
+        content = requests.get(url, timeout=5).content
+        logging.info(f"Content size for {url}: {len(content)}")
+    except Exception as e:
+        logging.error(f"Could not get content for {url}: {str(e)}")
+        return redirect(f"{SITE_URL}/staticfiles/default_image.png")
+
+    if len(content) < 200:
+        return redirect(f"{SITE_URL}/staticfiles/default_image.png")
+
+    return HttpResponse(content, content_type="image/png")

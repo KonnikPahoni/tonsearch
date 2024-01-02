@@ -15,7 +15,7 @@ class Command(BaseCommand):
     help = f"Scans the supplied address."
 
     def handle(self, *args, **options):
-        for collection in Collection.objects.filter(last_fetched_at__isnull=True):
+        for collection in Collection.objects.all():
             logging.info(f"Processing collection {collection}...")
             fetch_collection_service(collection)
             logging.info(f"Collection {collection} processed.")
