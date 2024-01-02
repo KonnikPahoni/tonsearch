@@ -18,7 +18,7 @@
 
     <meta property="og:url" content="{{ site_url }}/nft/{{ user_friendly_id }}">
 
-    <meta property="og:image" content="{{ image }}">
+    <meta property="og:image" content="{{ site_url }}/nft/{{ user_friendly_id }}/image">
 
 {% endblock head %}
 
@@ -42,7 +42,7 @@
             <div class="container my-4 text-center">
                 <div class="img-block mx-auto">
                     <div class="text-center">
-                        <img src="{{ image }}" alt="NFT image" class="photo-img">
+                        <img src="{{ site_url }}/nft/{{ user_friendly_id }}/image" alt="NFT image" class="photo-img">
 
                         {% if external_url is not None %}
                             <br>

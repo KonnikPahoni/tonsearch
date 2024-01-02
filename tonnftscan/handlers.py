@@ -1,7 +1,10 @@
 import logging
 
+from django.http import HttpResponse
+
 from tonnftscan.models import Collection, NFT, Address
 from tonnftscan.services import fetch_collection_service, fetch_nft_service, fetch_address_service
+from tonnftscan.settings import BASE_DIR
 
 
 def fetch_collections_handler():
@@ -46,3 +49,15 @@ def fetch_nfts_handler():
             logging.info(f"Processing nft {nft} for collection {collection}...")
             fetch_nft_service(nft)
             logging.info(f"NFT {nft} for collection {collection} processed.")
+
+
+def get_sitemap_handler():
+    """
+    Return sitemap file response.
+    """
+    with open(BASE_DIR / "tonnftscan/static/sitemap.xml", "r", encoding="utf-8") as input_file:
+        content = input_file.read()
+
+    response = HttpResponse(content, content_type="application/xml")
+
+    return response

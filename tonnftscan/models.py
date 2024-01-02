@@ -28,6 +28,9 @@ class Address(models.Model):
     def __str__(self):
         return f"{self.address}"
 
+    def get_url(self):
+        return f"{SITE_URL}/wallet/{convert_hex_address_to_user_friendly(self.address)}"
+
     def get_context(self):
         """
         Returns context for a wallet.
@@ -81,11 +84,11 @@ class Collection(models.Model):
         # Add birthday to the first sublist maybe if it causes problems?
         ordering = ["address"]
 
+    def get_url(self):
+        return f"{SITE_URL}/collection/{convert_hex_address_to_user_friendly(self.address)}"
+
     def __str__(self):
         return f"{self.name} ({self.address})"
-
-    def get_nfts_count(self):
-        return NFT.objects.filter(collection=self).count()
 
     def get_context(self):
         """
@@ -127,7 +130,7 @@ class Collection(models.Model):
             "cover_image": self.cover_image if self.cover_image != "" else None,
             "external_url": self.external_url if self.external_url != "" else None,
             "last_fetched_at": self.last_fetched_at,
-            "nfts_count": self.get_nfts_count(),
+            "nfts_count": self.nfts_count,
         }
 
         return context
@@ -152,6 +155,9 @@ class NFT(models.Model):
     verified = models.BooleanField(default=False)
     approved_by = models.CharField(max_length=1000, blank=True, null=True)
     last_fetched_at = models.DateTimeField(blank=True, null=True)
+
+    def get_url(self):
+        return f"{SITE_URL}/nft/{convert_hex_address_to_user_friendly(self.address)}"
 
     def get_context(self):
         """

@@ -350,7 +350,7 @@ def get_nft_for_address_service(nft_id: str) -> NFT:
     return nft
 
 
-def get_wallet_for_address_service(wallet_id: str) -> NFT:
+def get_wallet_for_address_service(wallet_id: str) -> Address:
     """
     Returns a wallet for a given address.
     """

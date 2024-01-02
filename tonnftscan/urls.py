@@ -12,6 +12,9 @@ from tonnftscan.views import (
     WalletsView,
     SearchView,
     CollectionImageView,
+    SitemapView,
+    NFTImageView,
+    WalletImageView,
 )
 
 urlpatterns = [
@@ -27,9 +30,16 @@ urlpatterns = [
     path("collection/<str:collection_id>", CollectionView.as_view(), name="collection"),
     path("nfts", NFTsView.as_view(), name="nfts"),
     path("nfts/<int:page_number>", NFTsView.as_view(), name="nfts"),
+    path("nft/<str:nft_id>/image", NFTImageView.as_view(), name="nft-image"),
     path("nft/<str:nft_id>", NFTView.as_view(), name="nft"),
     path("wallets", WalletsView.as_view(), name="wallets"),
     path("wallets/<int:page_number>", WalletsView.as_view(), name="wallets"),
+    path("wallet/<str:wallet_id>/image", WalletImageView.as_view(), name="wallet-image"),
     path("wallet/<str:wallet_id>", WalletView.as_view(), name="wallet"),
     path("search", SearchView.as_view(), name="search"),
+    path(
+        "sitemap.xml",
+        cache_page(60 * 60 * 24)(SitemapView.as_view()),
+        name="sitemap",
+    ),
 ]

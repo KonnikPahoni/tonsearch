@@ -10,6 +10,8 @@ from django.template import loader
 import jwt
 import time
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+
+from tonnftscan.handlers import get_sitemap_handler
 from tonnftscan.models import Collection, NFT, Address
 from tonnftscan.services import (
     get_collection_for_address_service,
@@ -337,3 +339,45 @@ class CollectionImageView(APIView):
             return proxy_image_file_service(collection.image)
         except ValueError:
             return redirect(f"{SITE_URL}/staticfiles/default_image.png")
+
+
+class NFTImageView(APIView):
+    permission_classes = (AllowAny,)
+    http_method_names = ["get"]
+
+    def get(self, request, nft_id):
+        """
+        Returns the NFT image.
+        """
+        nft = get_nft_for_address_service(nft_id)
+
+        try:
+            return proxy_image_file_service(nft.image)
+        except ValueError:
+            return redirect(f"{SITE_URL}/staticfiles/default_image.png")
+
+
+class WalletImageView(APIView):
+    permission_classes = (AllowAny,)
+    http_method_names = ["get"]
+
+    def get(self, request, wallet_id):
+        """
+        Returns the wallet icon.
+        """
+        wallet = get_wallet_for_address_service(wallet_id)
+
+        try:
+            return proxy_image_file_service(wallet.icon)
+        except ValueError:
+            return redirect(f"{SITE_URL}/staticfiles/default_image.png")
+
+
+class SitemapView(APIView):
+    http_method_names = ["get"]
+
+    def get(self, request):
+        """
+        Return sitemap file response.
+        """
+        return get_sitemap_handler()
