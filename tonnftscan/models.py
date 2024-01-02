@@ -29,7 +29,7 @@ class Address(models.Model):
         return f"{self.address}"
 
     def get_url(self):
-        return f"{SITE_URL}/wallet/{convert_hex_address_to_user_friendly(self.address)}"
+        return f"https://tonsearch.org/wallet/{convert_hex_address_to_user_friendly(self.address)}"
 
     def get_context(self):
         """
@@ -79,13 +79,14 @@ class Collection(models.Model):
     external_url = models.CharField(max_length=10000)
     last_fetched_at = models.DateTimeField(blank=True, null=True)
     nfts_count = models.IntegerField(default=0)
+    pushed_to_google_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
         # Add birthday to the first sublist maybe if it causes problems?
         ordering = ["address"]
 
     def get_url(self):
-        return f"{SITE_URL}/collection/{convert_hex_address_to_user_friendly(self.address)}"
+        return f"https://tonsearch.org/collection/{convert_hex_address_to_user_friendly(self.address)}"
 
     def __str__(self):
         return f"{self.name} ({self.address})"
@@ -157,7 +158,7 @@ class NFT(models.Model):
     last_fetched_at = models.DateTimeField(blank=True, null=True)
 
     def get_url(self):
-        return f"{SITE_URL}/nft/{convert_hex_address_to_user_friendly(self.address)}"
+        return f"https://tonsearch.org/nft/{convert_hex_address_to_user_friendly(self.address)}"
 
     def get_context(self):
         """

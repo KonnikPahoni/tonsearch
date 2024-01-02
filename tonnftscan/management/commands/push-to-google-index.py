@@ -2,6 +2,8 @@ import logging
 
 from django.core.management.base import BaseCommand
 
+from tonnftscan.index import send_page_to_google_index
+from tonnftscan.models import Collection
 from tonnftscan.utils import send_message_to_support_chat
 
 
@@ -9,22 +11,21 @@ class Command(BaseCommand):
     help = "Push pages to Google index."
 
     def handle(self, *args, **options):
-        persons_to_push_data = SearchData.objects.filter(
-            pushed_to_google_at__isnull=True, person__checked=True, person__hidden=False, person__deleted=False
-        ).order_by("-person__created_at")
+        collections_to_push_data = Collection.objects.filter(pushed_to_google_at__isnull=True).order_by("-nfts_count")
 
-        logging.info(f"Found {persons_to_push_data.count()} records to push to Google index.")
+        logging.info(f"Found {collections_to_push_data.count()} collections to push to Google index.")
 
         pushed = 0
 
-        for person_search_data in persons_to_push_data:
-            search_data_object = send_person_to_google_index(person_search_data.person)
+        for collection in collections_to_push_data:
+            search_data_object = send_page_to_google_index(collection.get_url(), collection)
 
             if search_data_object is None:
-                logging.error(f"Error while pushing {person_search_data.person} to Google index.")
+                logging.error(f"Error while pushing {collection} to Google index.")
                 break
             else:
                 pushed += 1
 
-        logging.info(f"Pushed {pushed} records to Google index.")
+            break
+        logging.info(f"Pushed {pushed} collections to Google index.")
         send_message_to_support_chat(f"Pushed {pushed} collections to Google index.")

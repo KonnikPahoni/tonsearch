@@ -49,7 +49,7 @@
 
                         {% if external_url is not None %}
                             <br>
-                            <a rel="nofollow" href="{{ external_url }}" target="_blank">
+                            <a {% if allow_links is False %}rel="nofollow"{% else %}{% endif %} href="{{ external_url }}" target="_blank">
                                 <button type="button" class="btn btn-primary btn-open btn-lg my-2">
                                     View collection ↗
                                 </button>
@@ -101,7 +101,7 @@
                     <h3 class="mb-3 text-muted">Social links</h3>
                     <ul class="list-group">
                         {% for link in social_links %}
-                            <a rel="nofollow" href="{{ link.url }}" target="_blank">
+                            <a {% if allow_links is False %}rel="nofollow"{% else %}{% endif %} href="{{ link.url }}" target="_blank">
                                 <li class="list-group-item my-1">{{ link.name }} ↗</li>
                             </a>
                         {% endfor %}

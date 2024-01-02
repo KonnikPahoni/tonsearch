@@ -11,6 +11,7 @@ import jwt
 import time
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
+from tonnftscan.constants import REL_NOFOLLOW_EXCEPTIONS
 from tonnftscan.handlers import get_sitemap_handler
 from tonnftscan.models import Collection, NFT, Address
 from tonnftscan.services import (
@@ -22,7 +23,7 @@ from tonnftscan.services import (
     search_wallets_service,
 )
 from tonnftscan.settings import METABASE_EMBED_KEY, METABASE_SITE_URL, SITE_URL
-from tonnftscan.utils import get_base_context, proxy_image_file_service
+from tonnftscan.utils import get_base_context, proxy_image_file_service, convert_hex_address_to_user_friendly
 
 
 class IndexView(APIView):
@@ -207,6 +208,9 @@ class CollectionView(APIView):
             **collection_context,
             **base_context,
             "owner": collection.owner.get_context(),
+            "allow_links": True
+            if convert_hex_address_to_user_friendly(collection.address) in REL_NOFOLLOW_EXCEPTIONS
+            else False,
         }
         logging.info(f"Context for collection: {context}")
 

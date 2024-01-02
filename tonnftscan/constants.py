@@ -1,53 +1,7 @@
-import decimal
-from django.db import models
+# List of collections for which no rel=nofollow is added on NFT and collection links.
 
-NUMBER_OF_RETRIES = 60
-
-MASTER_WALLET_NAME = "deposit"
-
-MIN_ALLOWED_AMOUNT = decimal.Decimal("0.00005")
-
-# TODO: These values should be adjusted for production
-DEFAULT_ADDRESS_SCAN_TIME_HOURS = 24 * 7
-DEFAULT_ADDRESS_SCAN_INTERVAL_MIN = 5
-
-# How many hours before delivery the user should be notified
-DELIVERY_NOTIFICATION_INTERVAL_HOURS = 24
-
-SUPPORT_EMAIL = "support@bitcapsule.org"
-NOREPLY_EMAIL_FROM = "noreply@bitcapsule.org"
-MAILJET_EMAIL_FROM_NAME = "BitCapsule"
-BITCAPSULE_SUPPORT_TO_NAME = "BitCapsule Support"
-
-BITCAPSULE_AUTH_HEADER = "Auth-User"
-
-# General email template, can be used for any admin notifications
-DEFAULT_ADMIN_EMAIL_TEMPLATE = 4282354
-
-# Email templates
-INSUFFICIENT_TRANSACTION_VALUE_TEMPLATE = 4227347
-INSUFFICIENT_TRANSACTION_VALUE_ADMIN_TEMPLATE = 4263828
-CAPSULE_IS_SET_TEMPLATE = 4227359
-CAPSULE_IS_SET_TEMPLATE_ADMIN = 4263834
-# Just in case templates
-UNUSUAL_TRANSACTION_TEMPLATE_ADMIN = DEFAULT_ADMIN_EMAIL_TEMPLATE
-UNREGISTERED_CAPSULE_TEMPLATE = DEFAULT_ADMIN_EMAIL_TEMPLATE
-ENTER_DELIVERY_ADDRESS_TEMPLATE = 4227360
-UPLOAD_YOUR_ID_TEMPLATE = 4227363
-
-
-class Currency(models.TextChoices):
-    BTC = "BTC", "Bitcoin"
-
-
-# Names of Celery tasks
-SCAN_ADDRESS_TASK_NAME = "scan_address"
-DELIVERY_ADDRESS_TASK_NAME = "delivery_address"
-REQUEST_ID_TASK_NAME = "request_id"
-SEND_PAYOUT_TASK_NAME = "send_payout"
-
-DEFAULT_PAYOUT_BLOCKCHAIN_PUSH_INTERVAL_DAYS = 1
-DEFAULT_DELIVERY_ADDRESS_NOTIFICATION_INTERVAL_DAYS = 3
-DEFAULT_IDENTITY_CHECK_NOTIFICATION_INTERVAL_DAYS = 5
-
-TELEGRAM_API_ROOT = "https://api.telegram.org"
+REL_NOFOLLOW_EXCEPTIONS = [
+    "EQAAvO8rqkV6X4HqOtq1VHHT4_NGlhahJYimHBAg97NvlL8I",
+    "EQB5-7Vts5Pfu0csjH_g0l4ewMW2yIVZjQlKOVMQUDhs9MK_",
+    "EQDznivJJ5MVc89Jk4iYtEzSRi_FD-0R6urzhScKBchkZdBC",
+]
