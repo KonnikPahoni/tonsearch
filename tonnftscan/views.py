@@ -204,10 +204,15 @@ class CollectionView(APIView):
 
         collection_context = collection.get_context()
 
+        try:
+            owner_context = collection.owner.get_context()
+        except AttributeError:
+            owner_context = None
+
         context = {
             **collection_context,
             **base_context,
-            "owner": collection.owner.get_context(),
+            "owner": owner_context,
             "allow_links": True
             if convert_hex_address_to_user_friendly(collection.address) in REL_NOFOLLOW_EXCEPTIONS
             else False,
