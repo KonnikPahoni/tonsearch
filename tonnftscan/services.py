@@ -120,7 +120,13 @@ def fetch_collection_service(collection: Collection):
                 "Authorization": f"Bearer {TON_API_KEY}",
             },
         )
-        response_json = response.json()
+
+        try:
+            response_json = response.json()
+        except Exception as e:
+            logging.error(f"Error parsing response: {e}. Response: {response.text}")
+            continue
+
         logging.info(f"Processing collection {collection.address}...")
 
         nft_items = response_json["nft_items"]
