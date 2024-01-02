@@ -41,12 +41,9 @@ class IndexView(APIView):
             "params": {},
             "exp": round(time.time()) + (60 * 10),  # 10 minute expiration
         }
-        token = jwt.encode(payload, METABASE_EMBED_KEY, algorithm="HS256")
-
-        iframeUrl = METABASE_SITE_URL + "/embed/dashboard/" + token + "#bordered=true&titled=true"
 
         collections_context = [
-            collection.get_context() for collection in Collection.objects.order_by("-created_at")[:8]
+            collection.get_context() for collection in Collection.objects.order_by("-nfts_count")[:16]
         ]
 
         context = {
@@ -319,6 +316,7 @@ class SearchView(APIView):
             "nfts_count": nfts_filterset.count(),
             "wallets": [wallet.get_context() for wallet in wallet_objects],
             "wallets_count": wallets_filterset.count(),
+            "query": query,
         }
         logging.info(f"Context for search: {context}")
 
@@ -339,6 +337,22 @@ class CollectionImageView(APIView):
             return proxy_image_file_service(collection.image)
         except ValueError:
             return redirect(f"{SITE_URL}/staticfiles/default_image.png")
+
+
+class CollectionCoverView(APIView):
+    permission_classes = (AllowAny,)
+    http_method_names = ["get"]
+
+    def get(self, request, collection_id):
+        """
+        Returns the collection image.
+        """
+        collection = get_collection_for_address_service(collection_id)
+
+        try:
+            return proxy_image_file_service(collection.cover_image)
+        except ValueError:
+            return redirect(f"{SITE_URL}/staticfiles/default_cover.png")
 
 
 class NFTImageView(APIView):

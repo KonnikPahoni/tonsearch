@@ -1,12 +1,9 @@
 import logging
 import xml.etree.ElementTree as ET
-from django.core.management import call_command
 from django.core.management.base import BaseCommand
 
-from backend.models import Person
-from backend.settings import BASE_DIR
-
 from tonnftscan.models import Collection
+from tonnftscan.settings import BASE_DIR
 
 
 class Command(BaseCommand):

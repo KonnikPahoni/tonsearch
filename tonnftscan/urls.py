@@ -15,6 +15,7 @@ from tonnftscan.views import (
     SitemapView,
     NFTImageView,
     WalletImageView,
+    CollectionCoverView,
 )
 
 urlpatterns = [
@@ -27,15 +28,20 @@ urlpatterns = [
         cache_page(60 * 60 * 24 * 7)(CollectionImageView.as_view()),
         name="collection-image",
     ),
-    path("collection/<str:collection_id>", CollectionView.as_view(), name="collection"),
+    path(
+        "collection/<str:collection_id>/cover",
+        cache_page(60 * 60 * 24 * 7)(CollectionCoverView.as_view()),
+        name="collection-cover",
+    ),
+    path("collection/<str:collection_id>", cache_page(60 * 60 * 24 * 7)(CollectionView.as_view()), name="collection"),
     path("nfts", NFTsView.as_view(), name="nfts"),
     path("nfts/<int:page_number>", NFTsView.as_view(), name="nfts"),
-    path("nft/<str:nft_id>/image", NFTImageView.as_view(), name="nft-image"),
-    path("nft/<str:nft_id>", NFTView.as_view(), name="nft"),
+    path("nft/<str:nft_id>/image", cache_page(60 * 60 * 24 * 7)(NFTImageView.as_view()), name="nft-image"),
+    path("nft/<str:nft_id>", cache_page(60 * 60 * 24 * 7)(NFTView.as_view()), name="nft"),
     path("wallets", WalletsView.as_view(), name="wallets"),
     path("wallets/<int:page_number>", WalletsView.as_view(), name="wallets"),
-    path("wallet/<str:wallet_id>/image", WalletImageView.as_view(), name="wallet-image"),
-    path("wallet/<str:wallet_id>", WalletView.as_view(), name="wallet"),
+    path("wallet/<str:wallet_id>/image", cache_page(60 * 60 * 24 * 7)(WalletImageView.as_view()), name="wallet-image"),
+    path("wallet/<str:wallet_id>", cache_page(60 * 60 * 24 * 7)(WalletView.as_view()), name="wallet"),
     path("search", SearchView.as_view(), name="search"),
     path(
         "sitemap.xml",
