@@ -104,7 +104,12 @@ def proxy_image_file_service(url: str, cover=False):
     if len(content) < 30000:
         return get_default_image_content(default_image)
 
-    return HttpResponse(content, content_type="image/png")
+    content_type = "image/png"
+
+    if url.endswith(".svg"):
+        content_type = "image/svg+xml"
+
+    return HttpResponse(content, content_type=content_type)
 
 
 def get_item_from_cache_by_key(key: str):

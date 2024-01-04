@@ -348,6 +348,7 @@ class CollectionImageView(APIView):
         collection = get_collection_for_address_service(collection_id)
 
         try:
+            logging.info(f"Collection image: {collection.image}")
             return proxy_image_file_service(collection.image)
         except ValueError:
             return get_default_image_content()
