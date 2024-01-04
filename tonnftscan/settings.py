@@ -31,6 +31,13 @@ METABASE_SITE_URL = "http://localhost:8080"
 
 SITE_URL = env("SITE_URL")
 
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
+        "LOCATION": BASE_DIR / "var/django_cache",
+    }
+}
+
 if ENV == "production":
     CSRF_TRUSTED_ORIGINS = ["https://tonsearch.org"]
     ALLOWED_HOSTS = ["tonsearch.org", "161.35.196.15"]

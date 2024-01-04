@@ -1,5 +1,5 @@
 import logging
-
+from django.core.cache import cache
 import requests
 import telegram
 from django.http import HttpResponse
@@ -11,6 +11,16 @@ from tonnftscan.settings import SITE_URL, ENV, TELEGRAM_TECH_CHAT_ID, TELEGRAM_S
 logging.info("Initializing Telegram bot...")
 bot = telegram.Bot(TELEGRAM_API_TOKEN)
 logging.info("Telegram bot initialized.")
+
+
+def get_default_image_content(default_image="default_image.png"):
+    """
+    Get default image content.
+    """
+    with open(f"tonnftscan/static/{default_image}", "rb") as f:
+        content = f.read()
+
+    return HttpResponse(content, content_type="image/png")
 
 
 def convert_hex_address_to_user_friendly(hex_address: str):
@@ -89,9 +99,25 @@ def proxy_image_file_service(url: str, cover=False):
         logging.info(f"Content size for {url}: {len(content)}")
     except Exception as e:
         logging.error(f"Could not get content for {url}: {str(e)}")
-        return redirect(f"{SITE_URL}/staticfiles/{default_image}")
+        return get_default_image_content(default_image)
 
     if len(content) < 30000:
-        return redirect(f"{SITE_URL}/staticfiles/{default_image}")
+        return get_default_image_content(default_image)
 
     return HttpResponse(content, content_type="image/png")
+
+
+def get_item_from_cache_by_key(key: str):
+    """
+    Get item from cache by key.
+    """
+
+    return cache.get(key)
+
+
+def set_item_to_cache_by_key(key: str, value: str, timeout: int):
+    """
+    Set item to cache by key.
+    """
+
+    cache.set(key, value, timeout=timeout)

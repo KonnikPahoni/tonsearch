@@ -23,7 +23,12 @@ from tonnftscan.services import (
     search_wallets_service,
 )
 from tonnftscan.settings import METABASE_EMBED_KEY, METABASE_SITE_URL, SITE_URL
-from tonnftscan.utils import get_base_context, proxy_image_file_service, convert_hex_address_to_user_friendly
+from tonnftscan.utils import (
+    get_base_context,
+    proxy_image_file_service,
+    convert_hex_address_to_user_friendly,
+    get_default_image_content,
+)
 
 
 class IndexView(APIView):
@@ -345,7 +350,7 @@ class CollectionImageView(APIView):
         try:
             return proxy_image_file_service(collection.image)
         except ValueError:
-            return redirect(f"{SITE_URL}/staticfiles/default_image.png")
+            return get_default_image_content()
 
 
 class CollectionCoverView(APIView):
