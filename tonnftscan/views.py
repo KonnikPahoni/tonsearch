@@ -164,7 +164,7 @@ class WalletsView(APIView):
         objects_per_page = 16
 
         # nfts_owners_list = list(NFT.objects.filter(owner__isnull=False).values_list("owner", flat=True).distinct())
-        addresses_filterset = Address.objects.filter(last_fetched_at__isnull=False)
+        addresses_filterset = Address.objects.filter(last_fetched_at__isnull=False).order_by("icon")
 
         paginator = Paginator(addresses_filterset, objects_per_page)
 
