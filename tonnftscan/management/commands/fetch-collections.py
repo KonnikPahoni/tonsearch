@@ -28,7 +28,12 @@ class Command(BaseCommand):
             f"Finished fetching all collections at {time_end}. Took {(time_end - time_start).seconds / 60} min."
         )
 
-        for collection in Collection.objects.filter(last_fetched_at__isnull=True):
+        collections_filterset = Collection.objects.filter(last_fetched_at__isnull=True)
+
+        for collection in collections_filterset:
             logging.info(f"Processing collection {collection}...")
             fetch_collection_service(collection)
             logging.info(f"Collection {collection} processed.")
+
+        message = f"Fetched {collections_filterset.count()} new collections at {time_end}."
+        send_message_to_support_chat(message, tech_chat=True)
