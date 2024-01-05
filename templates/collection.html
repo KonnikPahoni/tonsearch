@@ -126,7 +126,7 @@
 
                         <a class="collection-card-link" href="{{ site_url }}/nft/{{ popular_nft.user_friendly_id }}">
                             <div class="card my-2 mx-1 item-card">
-                                <img src="{{ popular_nft.image }}" class="card-img-top tile-img"
+                                <img src="{{ site_url }}/nft/{{ popular_nft.user_friendly_id }}/image" class="card-img-top tile-img"
                                      alt="{{ popular_nft.name }}">
                                 <p class="card-text text-muted mx-3 mt-2">{% if popular_nft.last_fetched_at is None %}No transactions{% else %}{{ popular_nft.transactions_num }} transactions{% endif %}</p>
                                 <div class="card-body px-2 pb-2 pt-0">
