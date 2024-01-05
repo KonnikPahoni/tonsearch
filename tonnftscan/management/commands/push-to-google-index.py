@@ -11,23 +11,27 @@ class Command(BaseCommand):
     help = "Push pages to Google index."
 
     def handle(self, *args, **options):
-        collections_to_push_data = Collection.objects.filter(pushed_to_google_at__isnull=True).order_by("-nfts_count")
+        try:
+            collections_to_push_data = Collection.objects.filter(pushed_to_google_at__isnull=True).order_by("-nfts_count")
 
-        logging.info(f"Found {collections_to_push_data.count()} collections to push to Google index.")
+            logging.info(f"Found {collections_to_push_data.count()} collections to push to Google index.")
 
-        pushed = 0
+            pushed = 0
 
-        for collection in collections_to_push_data:
-            search_data_object = send_page_to_google_index(collection.get_url(), collection)
+            for collection in collections_to_push_data:
+                search_data_object = send_page_to_google_index(collection.get_url(), collection)
 
-            if search_data_object is None:
-                logging.error(f"Error while pushing {collection} to Google index.")
-                break
-            else:
-                pushed += 1
+                if search_data_object is None:
+                    logging.error(f"Error while pushing {collection} to Google index.")
+                    break
+                else:
+                    pushed += 1
 
-            if pushed == 10:
-                break
+                if pushed == 10:
+                    break
 
-        logging.info(f"Pushed {pushed} collections to Google index.")
-        send_message_to_support_chat(f"Pushed {pushed} collections to Google index.")
+            logging.info(f"Pushed {pushed} collections to Google index.")
+            send_message_to_support_chat(f"Pushed {pushed} collections to Google index.")
+        except Exception as e:
+            logging.error(f"Error while pushing collections to Google index: {e}")
+            send_message_to_support_chat(f"Error while pushing collections to Google index: {e}", tech_chat=True)
