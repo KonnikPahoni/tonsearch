@@ -205,7 +205,7 @@ def fetch_address_service(address: Address):
         logging.error(f"Could not fetch address {address.address}: {response_json}")
         return
 
-    balance = response_json["balance"] if "balance" in response_json.keys() else 0
+    balance = response_json["balance"] if "balance" in response_json.keys() else None
 
     last_activity = response_json["last_activity"] if "last_activity" in response_json.keys() else None
     if last_activity is not None:
@@ -214,18 +214,34 @@ def fetch_address_service(address: Address):
     status = response_json["status"] if "status" in response_json.keys() else None
     interfaces = response_json["interfaces"] if "interfaces" in response_json.keys() else []
     name = response_json["name"] if "name" in response_json.keys() else None
-    is_scam = response_json["is_scam"] if "is_scam" in response_json.keys() else False
+    is_scam = response_json["is_scam"] if "is_scam" in response_json.keys() else None
     icon = response_json["icon"] if "icon" in response_json.keys() else None
-    is_wallet = response_json["is_wallet"] if "is_wallet" in response_json.keys() else False
+    is_wallet = response_json["is_wallet"] if "is_wallet" in response_json.keys() else None
 
-    address.balance = balance
-    address.last_activity = last_activity
-    address.status = status
-    address.interfaces = interfaces
-    address.name = name
-    address.is_scam = is_scam
-    address.icon = icon
-    address.is_wallet = is_wallet
+    if balance is not None:
+        address.balance = balance
+
+    if last_activity is not None:
+        address.last_activity = last_activity
+
+    if status is not None:
+        address.status = status
+
+    if interfaces is not None:
+        address.interfaces = interfaces
+
+    if name is not None:
+        address.name = name
+
+    if is_scam is not None:
+        address.is_scam = is_scam
+
+    if icon is not None:
+        address.icon = icon
+
+    if is_wallet is not None:
+        address.is_wallet = is_wallet
+
     address.last_fetched_at = timezone.now()
 
     address.save()
