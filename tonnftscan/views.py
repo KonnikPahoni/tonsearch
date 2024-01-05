@@ -209,6 +209,9 @@ class CollectionView(APIView):
 
         collection_context = collection.get_context()
 
+        popular_nfts = NFT.objects.filter(collection=collection).order_by("-created_at")[:12]
+        popular_nfts = [nft.get_context() for nft in popular_nfts]
+
         try:
             owner_context = collection.owner.get_context()
         except AttributeError:
@@ -221,6 +224,7 @@ class CollectionView(APIView):
             "allow_links": True
             if convert_hex_address_to_user_friendly(collection.address) in REL_NOFOLLOW_EXCEPTIONS
             else False,
+            "popular_nfts": popular_nfts,
         }
         logging.info(f"Context for collection: {context}")
 
@@ -246,6 +250,8 @@ class NFTView(APIView):
         context = {
             **nft_context,
             **base_context,
+            "owner": nft.owner.get_context() if nft.owner else None,
+            "collection_owner": nft.collection.owner.get_context() if nft.collection.owner else None,
         }
         logging.info(f"Context for nft: {context}")
 

@@ -201,6 +201,10 @@ def fetch_address_service(address: Address):
     )
     response_json = response.json()
 
+    if "balance" not in response_json.keys():
+        logging.error(f"Could not fetch address {address.address}: {response_json}")
+        return
+
     balance = response_json["balance"] if "balance" in response_json.keys() else 0
 
     last_activity = response_json["last_activity"] if "last_activity" in response_json.keys() else None

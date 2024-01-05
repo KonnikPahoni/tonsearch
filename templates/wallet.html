@@ -48,38 +48,24 @@
                 <div class="container my-4 text-center">
                     <div class="img-block mx-auto">
                         <div class="text-center">
-                            <img src="{{ site_url }}/wallet/{{ user_friendly_id }}/image" alt="{% if name is None %}{{ user_friendly_id }}{% else %}{{ name }}{% endif %}"
+                            <img src="{{ site_url }}/wallet/{{ user_friendly_id }}/image"
+                                 alt="{% if name is None %}{{ user_friendly_id }}{% else %}{{ name }}{% endif %}"
                                  class="photo-img">
                         </div>
                     </div>
                 </div>
             {% endif %}
 
-
             <div class="container">
-                <h3 class="mb-3 text-muted">Meta information</h3>
-                <p class="lead">Verified: <b>{{ verified }}</b></p>
-                <p class="lead">Approved by: <b>{{ approved_by }}</b></p>
-                <p class="lead">Attributes: <b>{{ attributes }}</b></p>
-                <p class="lead">Sale: <b>{{ sale }}</b></p>
+                <h3 class="mb-3 text-muted">Description</h3>
+                <p class="lead">Balance: <b>{{ balance }}</b></p>
+                <p class="lead">Last activity: <b>{{ last_activity }}</b></p>
+                <p class="lead">Status: <b>{{ status }}</b></p>
+                <p class="lead">Interfaces: <b>{{ interfaces }}</b></p>
+                <p class="lead">Is wallet: <b>{{ is_wallet }}</b></p>
+                <p class="lead">Is scam: <b>{{ is_scam }}</b></p>
+                <p class="lead">Nfts count: <b>{{ nfts_count }}</b></p>
             </div>
-
-            <div class="container">
-                <h2 class="mb-3 text-muted">Description</h2>
-                <p class="lead">{{ description }}
-
-                    {% if marketplace is not None %}
-                        <br><br>
-                        This collection was created via the {{ marketplace }} marketplace.
-
-                    {% else %}
-
-                    {% endif %}
-
-                </p>
-
-            </div>
-
         </div>
 
 {% endblock content %}

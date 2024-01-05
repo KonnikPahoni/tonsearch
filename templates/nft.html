@@ -60,20 +60,74 @@
             </div>
 
             <div class="container">
-                <p class="lead">Author: <b>{{ owner_address }}</b></p>
-            </div>
 
+
+                <p class="lead">
+                    Owner: <a class="navlink" href="{{ site_url }}/wallet/{{ owner.user_friendly_id }}">
+
+                    {% if owner.name is not None %}
+                        <b>{{ owner.name }}</b>
+                    {% else %}
+                        <b>{{ owner.user_friendly_id }}</b>
+                    {% endif %}
+                </a>
+                </p>
+
+                <p class="lead">
+                    Collection author: <a class="navlink"
+                                          href="{{ site_url }}/wallet/{{ collection_owner.user_friendly_id }}">
+
+                    {% if collection_owner.name is not None %}
+                        <b>{{ collection_owner.name }}</b>
+                    {% else %}
+                        <b>{{ collection_owner.user_friendly_id }}</b>
+                    {% endif %}
+                </a>
+                </p>
+            </div>
             <div class="container">
                 <h2 class="mb-3 text-muted">Description</h2>
                 <p class="lead">{{ description }}
 
-                    {% if marketplace is not None %}
+                    {% if verified is True %}
                         <br><br>
-                        This collection was created via the {{ marketplace }} marketplace.
-
+                        This NFT is <b>verified</b>.
                     {% else %}
-
+                        <br><br>
+                        This NFT is <b>not verified</b>.
                     {% endif %}
+                </p>
+
+                {% if attributes|length > 0 %}
+                    <table class="table mt-5 mb-4">
+                        <thead>
+                        <tr>
+                            <th>Attribute</th>
+                            <th>Value</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for attribute in attributes %}
+                            <tr>
+                                <td>{{ attribute.trait_type }}</td>
+                                <td>{{ attribute.value }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                {% endif %}
+
+
+                {% if approved_by|length > 0 %}
+                    <p class="lead">Approved by:</p>
+                    <ul>
+                        {% for approved in approved_by %}
+                            <li>{{ approved }}</li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                {% endif %}
 
                 </p>
             </div>
@@ -84,14 +138,6 @@
                 <p class="lead">Collection name: <b>{{ collection.name }}</b></p>
                 <p class="lead">Collection description: <b>{{ collection.description }}</b></p>
                 <p class="lead">NFTs in collection: <b>{{ collection.nfts_count }}</b></p>
-            </div>
-
-            <div class="container">
-                <h3 class="mb-3 text-muted">Meta information</h3>
-                <p class="lead">Verified: <b>{{ verified }}</b></p>
-                <p class="lead">Approved by: <b>{{ approved_by }}</b></p>
-                <p class="lead">Attributes: <b>{{ attributes }}</b></p>
-                <p class="lead">Sale: <b>{{ sale }}</b></p>
             </div>
 
             {% if social_links|length > 0 %}

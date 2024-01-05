@@ -1,3 +1,4 @@
+import json
 import logging
 import uuid
 
@@ -170,6 +171,8 @@ class NFT(models.Model):
         if prepared_image is None:
             prepared_image = f"{SITE_URL}/staticfiles/default_image.png"
 
+        approved_by = json.loads(self.approved_by.replace("'", '"')) if self.approved_by else None
+
         context = {
             "hex_id": self.address,
             "user_friendly_id": convert_hex_address_to_user_friendly(self.address),
@@ -183,7 +186,7 @@ class NFT(models.Model):
             "attributes": self.attributes,
             "sale": self.sale,
             "verified": self.verified,
-            "approved_by": self.approved_by,
+            "approved_by": approved_by,
         }
 
         return context

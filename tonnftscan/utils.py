@@ -101,7 +101,7 @@ def proxy_image_file_service(url: str, cover=False):
         logging.error(f"Could not get content for {url}: {str(e)}")
         return get_default_image_content(default_image)
 
-    if len(content) < 30000:
+    if len(content) < 1000:
         return get_default_image_content(default_image)
 
     content_type = "image/png"
