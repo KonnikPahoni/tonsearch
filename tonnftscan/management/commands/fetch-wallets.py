@@ -1,10 +1,9 @@
-import logging
-
+import time
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from tonnftscan.models import Collection, NFT, Address
-from tonnftscan.services import fetch_all_collections_service, fetch_collection_service, fetch_address_service
+from tonnftscan.models import NFT, Address
+from tonnftscan.services import fetch_address_service
 from tonnftscan.utils import send_message_to_support_chat
 
 
@@ -20,8 +19,9 @@ class Command(BaseCommand):
 
         for wallet in addresses_filterset:
             fetch_address_service(wallet)
+            time.sleep(1)
 
         time_end = timezone.now()
 
-        message = f"Fetched {addresses_filterset.count()} new wallets at {time_end}."
+        message = f"Fetched {addresses_filterset.count()} new wallets at {time_end}. Took {(time_end - time_start).seconds / 60} min."
         send_message_to_support_chat(message, tech_chat=True)
