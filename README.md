@@ -14,6 +14,7 @@ SQL database of TON NFTs.
 - Build and start docker containers with `docker-compose build && docker-compose up`
 - Enter the container environment with `docker container exec -it tonnftscan.app bash`
 - Execute management commands from inside the container with `python3 manage.py <command>`
+- - To view emails cron logs run `tail -1000 var/mail/mail` from inside the container
 
 #### Code style
 

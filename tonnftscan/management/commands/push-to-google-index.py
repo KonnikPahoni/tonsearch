@@ -12,7 +12,9 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         try:
-            collections_to_push_data = Collection.objects.filter(pushed_to_google_at__isnull=True).order_by("-nfts_count")
+            collections_to_push_data = Collection.objects.filter(pushed_to_google_at__isnull=True).order_by(
+                "-nfts_count"
+            )
 
             logging.info(f"Found {collections_to_push_data.count()} collections to push to Google index.")
 
