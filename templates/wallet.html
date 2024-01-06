@@ -28,7 +28,10 @@
 
         <div class="container bg-white px-5 pb-5 pt-3 center-container my-4">
             <div class="container text-right">
-                <p class="text-muted my-2">Last fetched: {{ last_fetched_at }}</p>
+                <p class="text-muted my-2">{% if last_fetched_at is None %} This address was not fetched yet{% else %}
+                    Last fetched: {{ last_fetched_at }}
+                {% endif %}
+                </p>
             </div>
 
             <div class="container mt-4">
