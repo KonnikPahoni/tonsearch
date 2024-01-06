@@ -12,6 +12,6 @@ COPY . /
 
 RUN chmod 0644 cronjobs
 
-RUN apt-get update && apt-get install -y cron && && crontab /cronjobs
+RUN apt-get update && apt-get install -y cron && crontab /cronjobs
 
 CMD service cron start && python manage.py collectstatic --noinput && python manage.py migrate && gunicorn tonnftscan.wsgi:application --bind 0.0.0.0:8008
