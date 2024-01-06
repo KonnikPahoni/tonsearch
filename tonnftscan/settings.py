@@ -160,6 +160,9 @@ REST_FRAMEWORK = {
     ),
 }
 
+if not DEBUG:
+    REST_FRAMEWORK["DEFAULT_THROTTLE_RATES"] = {"anon": "1312/day", "user": "5000/day"}
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
