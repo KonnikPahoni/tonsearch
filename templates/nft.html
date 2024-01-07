@@ -64,7 +64,6 @@
 
             <div class="container">
 
-
                 <p class="lead">
                     Owner: <a class="navlink" href="{{ site_url }}/wallet/{{ owner.user_friendly_id }}">
 
@@ -87,6 +86,23 @@
                     {% endif %}
                 </a>
                 </p>
+
+                {% if collection_owner is not None %}
+                    <p class="lead">
+                        Collection author: <a class="navlink"
+                                              href="{{ site_url }}/wallet/{{ collection_owner.user_friendly_id }}">
+
+                        {% if collection_owner.name is not None %}
+                            <b>{{ collection_owner.name }}</b>
+                        {% else %}
+                            <b>{{ collection_owner.user_friendly_id }}</b>
+                        {% endif %}
+                    </a>
+                    </p>
+                {% else %}
+                    <p class="lead">This NFT is special.</p>
+                {% endif %}
+
             </div>
             <div class="container">
                 <h2 class="mb-3 text-muted">Description</h2>

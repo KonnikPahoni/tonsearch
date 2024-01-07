@@ -29,7 +29,7 @@ class Command(BaseCommand):
                 else:
                     pushed += 1
 
-                if pushed == 10:
+                if pushed == 13:
                     break
 
             logging.info(f"Pushed {pushed} collections to Google index.")
