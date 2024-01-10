@@ -29,9 +29,6 @@ class Command(BaseCommand):
                 else:
                     pushed += 1
 
-                if pushed == 13:
-                    break
-
             logging.info(f"Pushed {pushed} collections to Google index.")
             send_message_to_support_chat(f"Pushed {pushed} collections to Google index.")
         except Exception as e:
