@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, re_path
 from django.contrib import admin
 from django.views.decorators.cache import cache_page
 
@@ -15,7 +15,7 @@ from tonnftscan.views import (
     SitemapView,
     NFTImageView,
     WalletImageView,
-    CollectionCoverView,
+    CollectionCoverView, favicon_view,
 )
 
 urlpatterns = [
@@ -48,4 +48,5 @@ urlpatterns = [
         cache_page(60 * 60 * 24)(SitemapView.as_view()),
         name="sitemap",
     ),
+    re_path(r'^favicon\.ico$', favicon_view),
 ]

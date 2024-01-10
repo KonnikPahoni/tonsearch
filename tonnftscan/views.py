@@ -4,6 +4,7 @@ from django.db.models import Count
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse
+from django.views.generic import RedirectView
 from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
 from django.template import loader
@@ -416,3 +417,6 @@ class SitemapView(APIView):
         Return sitemap file response.
         """
         return get_sitemap_handler()
+
+
+favicon_view = RedirectView.as_view(url='/staticfiles/favicon.ico', permanent=True)
