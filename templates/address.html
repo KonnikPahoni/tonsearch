@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}
+
+    {% if name is None %}
+        {{ user_friendly_id }}
+    {% else %}
+        {{ name }}
+    {% endif %}
+{% endblock title %}
+
+{% block head %}
+    <link rel="canonical" href="{{ site_url }}/address/{{ user_friendly_id }}"/>
+
+    <meta
+            property="og:title"
+            content="{% if name is None %}{{ user_friendly_id }}{% else %}{{ name }}{% endif %}">
+    <meta
+            name="description"
+            content="{{ description }}">
+    <meta property="og:description"
+          content="{{ description }}">
+
+    <meta property="og:url" content="{{ site_url }}/nft/{{ user_friendly_id }}">
+
+    <meta property="og:image" content="{{ site_url }}/nft/{{ user_friendly_id }}/image">
+
+{% endblock head %}
+
+{% block content %}
+
+    <div class="container-flex">
+
+        <div class="container bg-white px-5 pb-5 pt-3 center-container my-4">
+            <div class="container text-right">
+                <p class="text-muted my-2">{% if last_fetched_at is None %} This address was not fetched yet{% else %}
+                    Last fetched: {{ last_fetched_at }}
+                {% endif %}
+                </p>
+            </div>
+
+            <div class="container mt-4">
+                {% if address_type == 'wallet' %}
+                    <span class="badge badge-secondary">Wallet</span>
+                {% elif address_type == 'nft_sale' %}
+                    <span class="badge badge-secondary">Sale</span>
+                {% else %}
+                    <span class="badge badge-secondary">Unknown type</span>
+                {% endif %}
+                {% if name is None %}
+                    <h1 class="display-4 mb-3 break-word">{{ user_friendly_id }}</h1>
+                {% else %}
+                    <h1 class="display-4 mb-3">{{ name }}</h1>
+                    <p class="lead text-muted">User-friendly wallet ID: <b>{{ user_friendly_id }}</b></p>
+                {% endif %}
+                <p class="lead text-muted">HEX wallet ID: <b>{{ hex_id }}</b></p>
+            </div>
+
+            {% if icon is not None %}
+                <div class="container my-4 text-center">
+                    <div class="img-block mx-auto">
+                        <div class="text-center">
+                            <img src="{{ site_url }}/address/{{ user_friendly_id }}/image"
+                                 alt="{% if name is None %}{{ user_friendly_id }}{% else %}{{ name }}{% endif %}"
+                                 class="photo-img">
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            <div class="container">
+                <h3 class="mb-3 text-muted">Description</h3>
+                <p class="lead">Balance: <b>{{ balance }} TON</b></p>
+                <p class="lead">Last activity: <b>{{ last_activity }}</b></p>
+                <p class="lead">Status: <b>{{ status }}</b></p>
+                {% if interfaces|length > 0 %}
+                    <p class="lead">Interfaces:</p>
+                    <ul>
+                        {% for interface in interfaces %}
+                            <li class="lead"><b>{{ interface }}</b></li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                {% endif %}
+
+                {% if is_scam is True %}
+                    <p class="lead text-danger"><b>This address was marked as spam.</b></p>
+                {% endif %}
+                <a data-toggle="collapse" href="#nfts" role="button" aria-expanded="false" aria-controls="nfts"><p
+                        class="lead d-inline-block">Nfts count: <b>{{ nfts_count }}</b></p></a>
+
+                <div class="collapse" id="nfts">
+                    <div class="card card-body">
+                        <ul>
+                            {% for nft in nfts %}
+                                <li><a href="{{ site_url }}/nft/{{ nft.user_friendly_id }}">
+                                    {% if nft.name is None or nft.name == '' %}
+                                        {{ nft.user_friendly_id }}
+                                    {% else %}
+                                        {{ nft.name }}
+                                    {% endif %}
+                                </a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+{% endblock content %}

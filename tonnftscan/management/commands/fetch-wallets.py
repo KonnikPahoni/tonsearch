@@ -1,3 +1,4 @@
+import logging
 import time
 from django.core.management.base import BaseCommand
 from django.utils import timezone
@@ -15,7 +16,8 @@ class Command(BaseCommand):
 
         owners_list = NFT.objects.all().values_list("owner", flat=True).distinct()
 
-        addresses_filterset = Address.objects.filter(last_fetched_at__isnull=True, address__in=owners_list)
+        addresses_filterset = Address.objects.filter(address__in=owners_list)
+        logging.info(f"Found {addresses_filterset.count()} addresses to fetch.")
 
         for wallet in addresses_filterset:
             fetch_address_service(wallet)

@@ -5,6 +5,7 @@ import requests
 from django.utils import timezone
 from rest_framework.exceptions import NotFound
 
+from tonnftscan.constants import AddressType
 from tonnftscan.models import Collection, Address, NFT, Transaction, TransactionAction
 from tonnftscan.settings import TON_API_KEY
 from tonnftscan.utils import convert_user_friendly_address_to_hex
@@ -45,7 +46,6 @@ def fetch_all_collections_service():
                     address=address,
                     defaults={
                         "address": address,
-                        "is_wallet": collection["owner"]["is_wallet"],
                         "is_scam": collection["owner"]["is_scam"],
                     },
                 )
@@ -143,7 +143,6 @@ def fetch_collection_service(collection: Collection):
                     address=address,
                     defaults={
                         "address": address,
-                        "is_wallet": NFT_item["owner"]["is_wallet"],
                         "is_scam": NFT_item["owner"]["is_scam"],
                     },
                 )
@@ -200,6 +199,7 @@ def fetch_address_service(address: Address):
         },
     )
     response_json = response.json()
+    logging.info(f"Processing address {address.address}: {response_json}")
 
     if "balance" not in response_json.keys():
         logging.error(f"Could not fetch address {address.address}: {response_json}")
@@ -216,7 +216,17 @@ def fetch_address_service(address: Address):
     name = response_json["name"] if "name" in response_json.keys() else None
     is_scam = response_json["is_scam"] if "is_scam" in response_json.keys() else None
     icon = response_json["icon"] if "icon" in response_json.keys() else None
-    is_wallet = response_json["is_wallet"] if "is_wallet" in response_json.keys() else None
+
+    # Identify address type based on interfaces
+    address_type = None
+    for interface in interfaces:
+        if "wallet" in interface:
+            address_type = AddressType.WALLET
+            break
+
+        if "nft_sale" in interface:
+            address_type = AddressType.NFT_SALE
+            break
 
     if balance is not None:
         address.balance = balance
@@ -227,8 +237,7 @@ def fetch_address_service(address: Address):
     if status is not None:
         address.status = status
 
-    if interfaces is not None:
-        address.interfaces = interfaces
+    address.interfaces = interfaces
 
     if name is not None:
         address.name = name
@@ -239,8 +248,7 @@ def fetch_address_service(address: Address):
     if icon is not None:
         address.icon = icon
 
-    if is_wallet is not None:
-        address.is_wallet = is_wallet
+    address.address_type = address_type
 
     address.last_fetched_at = timezone.now()
 
@@ -278,7 +286,6 @@ def fetch_nft_service(nft: NFT):
                 address=event["account"]["address"],
                 defaults={
                     "address": event["account"]["address"],
-                    "is_wallet": event["account"]["is_wallet"],
                     "is_scam": event["account"]["is_scam"],
                     "name": event["account"]["name"] if "name" in event["account"].keys() else None,
                 },
@@ -301,7 +308,6 @@ def fetch_nft_service(nft: NFT):
                     address=action["account"]["NftItemTransfer"]["recipient"]["address"],
                     defaults={
                         "address": action["account"]["NftItemTransfer"]["recipient"]["address"],
-                        "is_wallet": action["account"]["NftItemTransfer"]["recipient"]["is_wallet"],
                         "is_scam": action["account"]["NftItemTransfer"]["recipient"]["is_scam"],
                         "name": action["account"]["NftItemTransfer"]["recipient"]["name"]
                         if "name" in action["account"]["NftItemTransfer"]["recipient"].keys()
@@ -313,7 +319,6 @@ def fetch_nft_service(nft: NFT):
                     address=action["account"]["NftItemTransfer"]["sender"]["address"],
                     defaults={
                         "address": action["account"]["NftItemTransfer"]["sender"]["address"],
-                        "is_wallet": action["account"]["NftItemTransfer"]["sender"]["is_wallet"],
                         "is_scam": action["account"]["NftItemTransfer"]["sender"]["is_scam"],
                         "name": action["account"]["NftItemTransfer"]["sender"]["name"]
                         if "name" in action["account"]["NftItemTransfer"]["sender"].keys()

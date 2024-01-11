@@ -3,6 +3,8 @@ import logging
 from datetime import timedelta
 from django.core.management.base import BaseCommand
 from django.utils import timezone
+
+from tonnftscan.constants import AddressType
 from tonnftscan.models import Collection, NFT, Address
 from tonnftscan.utils import convert_hex_address_to_user_friendly
 
@@ -138,7 +140,7 @@ class Command(BaseCommand):
         last_activity_limit = timezone.now() - timedelta(days=360)
 
         nft_filterset = NFT.objects.filter(
-            owner__last_activity__gt=last_activity_limit, owner__is_wallet=True, owner__is_scam=False
+            owner__last_activity__gt=last_activity_limit, owner__address_type=AddressType.WALLET, owner__is_scam=False
         )
 
         key_word_index = 0
@@ -212,7 +214,7 @@ class Command(BaseCommand):
 
         last_activity_limit = timezone.now() - timedelta(days=5)
         additional_addresses = Address.objects.filter(
-            last_activity__gt=last_activity_limit, is_wallet=True, is_scam=False
+            last_activity__gt=last_activity_limit, address_type=AddressType.WALLET, is_scam=False
         ).order_by("-last_activity")
 
         for additional_address in additional_addresses:

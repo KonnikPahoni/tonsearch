@@ -12,7 +12,7 @@ import jwt
 import time
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
-from tonnftscan.constants import REL_NOFOLLOW_EXCEPTIONS
+from tonnftscan.constants import REL_NOFOLLOW_EXCEPTIONS, AddressType
 from tonnftscan.handlers import get_sitemap_handler
 from tonnftscan.models import Collection, NFT, Address
 from tonnftscan.services import (
@@ -57,7 +57,7 @@ class IndexView(APIView):
             **get_base_context(),
             "collections_num": Collection.objects.count(),
             "nfts_num": NFT.objects.count(),
-            "wallets_num": Address.objects.filter(is_wallet=True, is_scam=False).count(),
+            "wallets_num": Address.objects.filter(address_type=AddressType.WALLET).count(),
             "nfts_on_sale_num": NFT.objects.all().exclude(sale={}).count(),
             "collections": collections_context,
         }
@@ -150,16 +150,16 @@ class NFTsView(APIView):
         return HttpResponse(template.render(context, request))
 
 
-class WalletsView(APIView):
+class AddressesView(APIView):
     permission_classes = (AllowAny,)
     http_method_names = ["get"]
 
     def get(self, request, page_number=1):
         """
-        Returns the wallet's page.
+        Returns the addresses page.
         """
 
-        template = loader.get_template("wallets.html")
+        template = loader.get_template("addresses.html")
         base_context = get_base_context()
 
         objects_per_page = 16
@@ -259,16 +259,16 @@ class NFTView(APIView):
         return HttpResponse(template.render(context, request))
 
 
-class WalletView(APIView):
+class AddressView(APIView):
     permission_classes = (AllowAny,)
     http_method_names = ["get"]
 
     def get(self, request, wallet_id):
         """
-        Returns the page for a wallet.
+        Returns the page for an address.
         """
 
-        template = loader.get_template("wallet.html")
+        template = loader.get_template("address.html")
 
         base_context = get_base_context()
         wallet = get_wallet_for_address_service(wallet_id)
@@ -419,4 +419,4 @@ class SitemapView(APIView):
         return get_sitemap_handler()
 
 
-favicon_view = RedirectView.as_view(url='/staticfiles/favicon.ico', permanent=True)
+favicon_view = RedirectView.as_view(url="/staticfiles/favicon.ico", permanent=True)

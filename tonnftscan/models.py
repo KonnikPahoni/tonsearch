@@ -6,6 +6,7 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django_better_admin_arrayfield.models.fields import ArrayField
 
+from tonnftscan.constants import AddressType
 from tonnftscan.settings import SITE_URL
 from tonnftscan.utils import convert_hex_address_to_user_friendly
 
@@ -17,7 +18,6 @@ class Address(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_scam = models.BooleanField(default=False)
-    is_wallet = models.BooleanField(default=False)
     name = models.CharField(max_length=1000, blank=True, null=True, db_index=True)
     last_fetched_at = models.DateTimeField(blank=True, null=True)
     balance = models.BigIntegerField(blank=True, null=True)
@@ -25,12 +25,13 @@ class Address(models.Model):
     status = models.CharField(max_length=1000, blank=True, null=True)
     interfaces = ArrayField(models.CharField(max_length=1000), default=list)
     icon = models.CharField(max_length=10000, blank=True, null=True)
+    address_type = models.CharField(max_length=256, blank=True, null=True, choices=AddressType.choices)
 
     def __str__(self):
         return f"{self.address}"
 
     def get_url(self):
-        return f"https://tonsearch.org/wallet/{convert_hex_address_to_user_friendly(self.address)}"
+        return f"https://tonsearch.org/address/{convert_hex_address_to_user_friendly(self.address)}"
 
     def get_context(self):
         """
@@ -49,14 +50,15 @@ class Address(models.Model):
             "user_friendly_id": convert_hex_address_to_user_friendly(self.address),
             "name": self.name,
             "last_fetched_at": self.last_fetched_at,
-            "balance": self.balance,
+            "balance": (self.balance or 0) / 1000000000,
             "last_activity": self.last_activity,
             "status": self.status,
             "interfaces": self.interfaces,
             "icon": image,
             "is_scam": self.is_scam,
-            "is_wallet": self.is_wallet,
+            "address_type": self.address_type,
             "nfts_count": nfts_count,
+            "nfts": [nft.get_context(with_collection=False) for nft in NFT.objects.filter(owner=self)],
         }
 
         return context
@@ -161,7 +163,7 @@ class NFT(models.Model):
     def get_url(self):
         return f"https://tonsearch.org/nft/{convert_hex_address_to_user_friendly(self.address)}"
 
-    def get_context(self):
+    def get_context(self, with_collection=True):
         """
         Returns context for a NFT.
         """
@@ -176,7 +178,6 @@ class NFT(models.Model):
         context = {
             "hex_id": self.address,
             "user_friendly_id": convert_hex_address_to_user_friendly(self.address),
-            "collection": self.collection.get_context(),
             "owner_address": convert_hex_address_to_user_friendly(self.owner.address) if self.owner else None,
             "name": self.name,
             "description": prepared_description,
@@ -188,6 +189,9 @@ class NFT(models.Model):
             "verified": self.verified,
             "approved_by": approved_by,
         }
+
+        if with_collection is True:
+            context["collection"] = self.collection.get_context()
 
         return context
 

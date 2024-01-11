@@ -65,7 +65,7 @@
             <div class="container">
 
                 <p class="lead">
-                    Owner: <a class="navlink" href="{{ site_url }}/wallet/{{ owner.user_friendly_id }}">
+                    Owner: <a class="navlink" href="{{ site_url }}/address/{{ owner.user_friendly_id }}">
 
                     {% if owner.name is not None %}
                         <b>{{ owner.name }}</b>
@@ -78,7 +78,7 @@
                 {% if collection_owner is not None %}
                     <p class="lead">
                         Collection author: <a class="navlink"
-                                              href="{{ site_url }}/wallet/{{ collection_owner.user_friendly_id }}">
+                                              href="{{ site_url }}/address/{{ collection_owner.user_friendly_id }}">
 
                         {% if collection_owner.name is not None %}
                             <b>{{ collection_owner.name }}</b>
@@ -94,19 +94,24 @@
             </div>
             <div class="container">
                 <h2 class="mb-3 text-muted">Description</h2>
-                <p class="lead">{{ description }}
+                <p class="lead">
 
+                {% if description is not None and description != "" %}
+                    {{ description }}
+                {% else %}
+                    No NFT description found in metadata.
+                {% endif %}
                     {% if verified is True %}
-                        <br>
+                        <br><br>
                         This NFT is <b>verified</b>.
                     {% else %}
-                        <br>
+                        <br><br>
                         This NFT is <b>not verified</b>.
                     {% endif %}
                 </p>
 
                 {% if attributes|length > 0 %}
-                    <table class="table mt-5 mb-4">
+                    <table class="table my-4">
                         <thead>
                         <tr>
                             <th>Attribute</th>
