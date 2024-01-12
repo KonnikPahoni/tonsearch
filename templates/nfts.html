@@ -34,8 +34,16 @@
         {% for nft in nfts %}
             <a class="collection-card-link" href="{{ site_url }}/nft/{{ nft.user_friendly_id }}">
                 <div class="card my-3 mx-1 collection-card">
-                    <img src="{{ site_url }}/nft/{{ nft.user_friendly_id }}/image" class="card-img-top tile-img" alt="{{ nft.name }}">
-                    <p class="card-text text-muted mx-3 mt-3">{{ nft.collection.nfts_count }} items in collection</p>
+                    <img src="{{ site_url }}/nft/{{ nft.user_friendly_id }}/image" class="card-img-top tile-img"
+                         alt="{{ nft.name }}">
+                    <p class="card-text text-muted mx-3 mt-3">
+                        {% if nft.last_fetched_at is None %}
+                            <br>
+                        {% else %}
+                            {{ nft.transactions_num }} transactions
+                        {% endif %}
+
+                    </p>
                     <div class="card-body px-3 pb-3 pt-0">
                         <h5 class="card-text">{{ nft.name }}</h5>
                     </div>

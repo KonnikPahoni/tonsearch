@@ -96,11 +96,11 @@
                 <h2 class="mb-3 text-muted">Description</h2>
                 <p class="lead">
 
-                {% if description is not None and description != "" %}
-                    {{ description }}
-                {% else %}
-                    No NFT description found in metadata.
-                {% endif %}
+                    {% if description is not None and description != "" %}
+                        {{ description }}
+                    {% else %}
+                        No NFT description found in metadata.
+                    {% endif %}
                     {% if verified is True %}
                         <br><br>
                         This NFT is <b>verified</b>.
@@ -142,6 +142,24 @@
                 {% endif %}
 
                 </p>
+
+                <a data-toggle="collapse" href="#transactions" role="button" aria-expanded="false" aria-controls="transactions"><p
+                        class="lead d-inline-block">Transactions count: <b>{{ transactions_num }}</b></p></a>
+
+                <div class="collapse mb-3" id="transactions">
+                    <div class="card card-body">
+                        <ul>
+                            {% for transaction in transactions %}
+                                <li>
+                                    <span><a href="{{ site_url }}/address/{{ transaction.sender }}">{{ transaction.sender }}</a>
+                                    → <a href="{{ site_url }}/address/{{ transaction.recipient }}">{{ transaction.recipient }}</a></span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+
+
             </div>
 
             <div class="container">

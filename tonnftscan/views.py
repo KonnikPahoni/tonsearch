@@ -22,6 +22,8 @@ from tonnftscan.services import (
     search_collections_service,
     search_nfts_service,
     search_wallets_service,
+    fetch_nft_service,
+    fetch_address_service,
 )
 from tonnftscan.settings import METABASE_EMBED_KEY, METABASE_SITE_URL, SITE_URL, BASE_DIR
 from tonnftscan.utils import (
@@ -51,7 +53,7 @@ class IndexView(APIView):
 
         context = {
             **get_base_context(),
-            "collections_num": Collection.objects.count(),
+            "collections_num": collections_filterset.count(),
             "nfts_num": NFT.objects.count(),
             "wallets_num": Address.objects.filter(address_type=AddressType.WALLET).count(),
             "nfts_on_sale_num": NFT.objects.all().exclude(sale={}).count(),
@@ -120,7 +122,10 @@ class NFTsView(APIView):
 
         objects_per_page = 16
 
-        nfts_filterset = NFT.objects.order_by("-created_at")
+        nfts_filterset = NFT.objects.all()
+        # Sort by the number of transactions
+        nfts_filterset = nfts_filterset.annotate(num_transactions=Count("transactions", distinct=True))
+        nfts_filterset = nfts_filterset.order_by("-num_transactions")
 
         paginator = Paginator(nfts_filterset, objects_per_page)
 
@@ -245,6 +250,9 @@ class NFTView(APIView):
         base_context = get_base_context()
         nft = get_nft_for_address_service(nft_id)
 
+        if nft.last_fetched_at is None:
+            fetch_nft_service(nft)
+
         nft_context = nft.get_context()
 
         context = {
@@ -271,6 +279,9 @@ class AddressView(APIView):
 
         base_context = get_base_context()
         wallet = get_wallet_for_address_service(wallet_id)
+
+        if wallet.last_fetched_at is None:
+            fetch_address_service(wallet)
 
         wallet_context = wallet.get_context()
 

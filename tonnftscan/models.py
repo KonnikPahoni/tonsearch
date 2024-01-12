@@ -146,8 +146,12 @@ class NFT(models.Model):
     """
 
     address = models.CharField(max_length=255, primary_key=True)
-    owner = models.ForeignKey(Address, on_delete=models.CASCADE, blank=True, null=True, related_name="nfts")
-    collection = models.ForeignKey(Collection, on_delete=models.CASCADE, blank=True, null=True, related_name="nfts")
+    owner = models.ForeignKey(
+        Address, on_delete=models.CASCADE, blank=True, null=True, related_name="nfts", db_index=True
+    )
+    collection = models.ForeignKey(
+        Collection, on_delete=models.CASCADE, blank=True, null=True, related_name="nfts", db_index=True
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     name = models.CharField(max_length=2000, db_index=True)
@@ -188,10 +192,12 @@ class NFT(models.Model):
             "sale": self.sale,
             "verified": self.verified,
             "approved_by": approved_by,
+            "transactions_num": self.transactions.count(),
         }
 
         if with_collection is True:
             context["collection"] = self.collection.get_context()
+            context["transactions"] = [transaction.get_context() for transaction in self.transactions.all()]
 
         return context
 
@@ -199,29 +205,32 @@ class NFT(models.Model):
         return f"{self.name} ({self.address})"
 
 
-class Transaction(models.Model):
+class NFTTransactionAction(models.Model):
     """
     Represents a TON NFT transfer.
     """
 
-    transaction_hex = models.CharField(max_length=255, primary_key=True)
-    account_address = models.ForeignKey(Address, on_delete=models.CASCADE, blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    timestamp = models.IntegerField()
-
-
-class TransactionAction(models.Model):
-    """
-    Represents a transaction action.
-    """
-
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE)
-    type = models.CharField(max_length=1000)
-    status = models.CharField(max_length=1000)
-    sender_address = models.ForeignKey(Address, on_delete=models.CASCADE, blank=True, null=True, related_name="actions")
-    recipient_address = models.ForeignKey(Address, on_delete=models.CASCADE, blank=True, null=True)
-    nft = models.ForeignKey(NFT, on_delete=models.CASCADE, blank=True, null=True)
+    transaction_hex = models.CharField(max_length=255)
+    nft = models.ForeignKey(NFT, on_delete=models.CASCADE, related_name="transactions", db_index=True)
+    sender = models.ForeignKey(
+        Address, on_delete=models.CASCADE, blank=True, null=True, related_name="sent_transactions"
+    )
+    recipient = models.ForeignKey(
+        Address, on_delete=models.CASCADE, blank=True, null=True, related_name="received_transactions"
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    status = models.CharField(max_length=1000)
+    type = models.CharField(max_length=1000)
+    timestamp = models.DateTimeField()
+
+    def get_context(self):
+        context = {
+            "hex_id": self.transaction_hex,
+            "sender": convert_hex_address_to_user_friendly(self.sender.address) if self.sender else None,
+            "recipient": convert_hex_address_to_user_friendly(self.recipient.address) if self.recipient else None,
+            "timestamp": self.timestamp,
+        }
+
+        return context

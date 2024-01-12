@@ -1,12 +1,14 @@
 import logging
 import time
+from datetime import datetime
 
 import requests
 from django.utils import timezone
+from django.utils.timezone import make_aware
 from rest_framework.exceptions import NotFound
 
 from tonnftscan.constants import AddressType
-from tonnftscan.models import Collection, Address, NFT, Transaction, TransactionAction
+from tonnftscan.models import Collection, Address, NFT, NFTTransactionAction
 from tonnftscan.settings import TON_API_KEY
 from tonnftscan.utils import convert_user_friendly_address_to_hex
 
@@ -261,70 +263,74 @@ def fetch_nft_service(nft: NFT):
     """
     limit = 1000
 
-    while True:
-        response = requests.get(
-            f"https://tonapi.io/v2/nfts/{nft.address}/history",
-            params={
-                "limit": limit,
-            },
-            headers={
-                "Authorization": f"Bearer {TON_API_KEY}",
-            },
-        )
-        response_json = response.json()
+    response = requests.get(
+        f"https://tonapi.io/v2/nfts/{nft.address}/history",
+        params={
+            "limit": limit,
+        },
+        headers={
+            "Authorization": f"Bearer {TON_API_KEY}",
+        },
+    )
+    response_json = response.json()
 
-        events = response_json["events"]
+    events = response_json["events"]
 
-        for event in events:
-            for action in actions:
-                transaction, _ = Transaction.objects.update_or_create(
-                    transaction_hex=event["transaction"],
-                    account_address=account_address,
-                    defaults={
-                        "transaction_hex": event["transaction"],
-                        "account_address": account_address,
-                        "timestamp": event["timestamp"],
-                    },
-                )
+    if len(events) > 1000:
+        raise Exception(f"Too many events for NFT {nft.address}")
 
-            # Remove existing actions for this transaction
+    for event in events:
+        for action in event["actions"]:
+            action_type = action["type"]
+            action_status = action["status"]
+            nft_id = action[action_type]["nft"]
 
-            for action in event["actions"]:
-                recipient_account_address, _ = Address.objects.update_or_create(
-                    address=action["account"]["NftItemTransfer"]["recipient"]["address"],
-                    defaults={
-                        "address": action["account"]["NftItemTransfer"]["recipient"]["address"],
-                        "is_scam": action["account"]["NftItemTransfer"]["recipient"]["is_scam"],
-                        "name": action["account"]["NftItemTransfer"]["recipient"]["name"]
-                        if "name" in action["account"]["NftItemTransfer"]["recipient"].keys()
-                        else None,
-                    },
-                )
+            if nft_id != nft.address:
+                continue
 
-                sender_account_address, _ = Address.objects.update_or_create(
-                    address=action["account"]["NftItemTransfer"]["sender"]["address"],
-                    defaults={
-                        "address": action["account"]["NftItemTransfer"]["sender"]["address"],
-                        "is_scam": action["account"]["NftItemTransfer"]["sender"]["is_scam"],
-                        "name": action["account"]["NftItemTransfer"]["sender"]["name"]
-                        if "name" in action["account"]["NftItemTransfer"]["sender"].keys()
-                        else None,
-                    },
-                )
+            sender_address_hex = action[action_type]["sender"]["address"]
+            recipient_address_hex = action[action_type]["recipient"]["address"]
 
-                transaction_nft = NFT.objects.get(address=action["account"]["NftItemTransfer"]["nft"])
+            sender_address, _ = Address.objects.update_or_create(
+                address=sender_address_hex,
+                defaults={
+                    "address": sender_address_hex,
+                    "is_scam": action[action_type]["sender"]["is_scam"],
+                    "name": action[action_type]["sender"]["name"]
+                    if "name" in action[action_type]["sender"].keys()
+                    else None,
+                },
+            )
 
-                action_object, _ = TransactionAction.objects.update_or_create(
-                    transaction=transaction,
-                    defaults={
-                        "transaction": transaction,
-                        "type": action["type"],
-                        "status": action["status"],
-                        "sender_address": sender_account_address,
-                        "recipient_address": recipient_account_address,
-                        "nft": transaction_nft,
-                    },
-                )
+            recipient_address, _ = Address.objects.update_or_create(
+                address=recipient_address_hex,
+                defaults={
+                    "address": recipient_address_hex,
+                    "is_scam": action[action_type]["recipient"]["is_scam"],
+                    "name": action[action_type]["recipient"]["name"]
+                    if "name" in action[action_type]["recipient"].keys()
+                    else None,
+                },
+            )
+
+            transaction_action, _ = NFTTransactionAction.objects.update_or_create(
+                transaction_hex=event["event_id"],
+                nft=nft,
+                sender=sender_address,
+                recipient=recipient_address,
+                defaults={
+                    "transaction_hex": event["event_id"],
+                    "nft": nft,
+                    "sender": sender_address,
+                    "recipient": recipient_address,
+                    "status": action_status,
+                    "type": action_type,
+                    "timestamp": make_aware(datetime.utcfromtimestamp(event["timestamp"])),
+                },
+            )
+
+    nft.last_fetched_at = timezone.now()
+    nft.save()
 
 
 def get_collection_for_address_service(collection_id: str) -> Collection:
@@ -409,6 +415,6 @@ def search_wallets_service(query: str):
     """
     Searches for wallets.
     """
-    collections = Address.objects.filter(name__icontains=query)
+    addresses = Address.objects.filter(name__icontains=query)
 
-    return collections
+    return addresses
