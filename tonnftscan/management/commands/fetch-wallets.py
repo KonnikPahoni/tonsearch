@@ -26,6 +26,7 @@ class Command(BaseCommand):
                 fetch_address_service(wallet)
             except Exception as e:
                 logging.error(f"Failed to fetch {wallet.address} with error: {e}")
+                break
             time.sleep(1)
 
         time_end = timezone.now()
