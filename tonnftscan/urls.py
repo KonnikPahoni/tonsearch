@@ -16,7 +16,7 @@ from tonnftscan.views import (
     NFTImageView,
     WalletImageView,
     CollectionCoverView,
-    favicon_view,
+    FaviconView,
 )
 
 urlpatterns = [
@@ -49,5 +49,5 @@ urlpatterns = [
         cache_page(60 * 60 * 24)(SitemapView.as_view()),
         name="sitemap",
     ),
-    re_path(r"^favicon\.ico$", favicon_view),
+    re_path(r"^favicon\.ico$", FaviconView.as_view()),
 ]

@@ -23,7 +23,7 @@ from tonnftscan.services import (
     search_nfts_service,
     search_wallets_service,
 )
-from tonnftscan.settings import METABASE_EMBED_KEY, METABASE_SITE_URL, SITE_URL
+from tonnftscan.settings import METABASE_EMBED_KEY, METABASE_SITE_URL, SITE_URL, BASE_DIR
 from tonnftscan.utils import (
     get_base_context,
     proxy_image_file_service,
@@ -44,12 +44,10 @@ class IndexView(APIView):
         template = loader.get_template("index.html")
 
         collections_filterset = Collection.objects.filter(last_fetched_at__isnull=False, nfts_count__gt=0)
-        collections_filterset = collections_filterset.annotate(num_addresses=Count('nfts__owner', distinct=True))
+        collections_filterset = collections_filterset.annotate(num_addresses=Count("nfts__owner", distinct=True))
         collections_filterset = collections_filterset.order_by("-num_addresses")
 
-        collections_context = [
-            collection.get_context() for collection in collections_filterset[:16]
-        ]
+        collections_context = [collection.get_context() for collection in collections_filterset[:16]]
 
         context = {
             **get_base_context(),
@@ -78,7 +76,7 @@ class CollectionsView(APIView):
 
         collections_filterset = Collection.objects.filter(last_fetched_at__isnull=False, nfts_count__gt=0)
         # Sort by the number of addresses that own NFTs from the collection
-        collections_filterset = collections_filterset.annotate(num_addresses=Count('nfts__owner', distinct=True))
+        collections_filterset = collections_filterset.annotate(num_addresses=Count("nfts__owner", distinct=True))
         collections_filterset = collections_filterset.order_by("-num_addresses")
 
         paginator = Paginator(collections_filterset, objects_per_page)
@@ -420,4 +418,14 @@ class SitemapView(APIView):
         return get_sitemap_handler()
 
 
-favicon_view = RedirectView.as_view(url="/staticfiles/favicon.ico", permanent=True)
+class FaviconView(APIView):
+    http_method_names = ["get"]
+
+    def get(self, request):
+        """
+        Return favicon.
+        """
+        with open(BASE_DIR / "tonnftscan/static/favicon.ico", "rb") as input_file:
+            content = input_file.read()
+
+        return HttpResponse(content, content_type="image/x-icon")
