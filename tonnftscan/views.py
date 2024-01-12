@@ -43,14 +43,12 @@ class IndexView(APIView):
 
         template = loader.get_template("index.html")
 
-        payload = {
-            "resource": {"dashboard": 3},
-            "params": {},
-            "exp": round(time.time()) + (60 * 10),  # 10 minute expiration
-        }
+        collections_filterset = Collection.objects.filter(last_fetched_at__isnull=False, nfts_count__gt=0)
+        collections_filterset = collections_filterset.annotate(num_addresses=Count('nfts__owner', distinct=True))
+        collections_filterset = collections_filterset.order_by("-num_addresses")
 
         collections_context = [
-            collection.get_context() for collection in Collection.objects.order_by("-nfts_count")[:16]
+            collection.get_context() for collection in collections_filterset[:16]
         ]
 
         context = {
@@ -79,6 +77,9 @@ class CollectionsView(APIView):
         base_context = get_base_context()
 
         collections_filterset = Collection.objects.filter(last_fetched_at__isnull=False, nfts_count__gt=0)
+        # Sort by the number of addresses that own NFTs from the collection
+        collections_filterset = collections_filterset.annotate(num_addresses=Count('nfts__owner', distinct=True))
+        collections_filterset = collections_filterset.order_by("-num_addresses")
 
         paginator = Paginator(collections_filterset, objects_per_page)
 

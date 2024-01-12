@@ -260,13 +260,12 @@ def fetch_nft_service(nft: NFT):
     Fetch transactions for a NFT.
     """
     limit = 1000
-    offset = 0
+
     while True:
         response = requests.get(
             f"https://tonapi.io/v2/nfts/{nft.address}/history",
             params={
                 "limit": limit,
-                "offset": offset,
             },
             headers={
                 "Authorization": f"Bearer {TON_API_KEY}",
@@ -276,30 +275,17 @@ def fetch_nft_service(nft: NFT):
 
         events = response_json["events"]
 
-        if len(events) == 0:
-            break
-
-        offset += limit
-
         for event in events:
-            account_address, _ = Address.objects.update_or_create(
-                address=event["account"]["address"],
-                defaults={
-                    "address": event["account"]["address"],
-                    "is_scam": event["account"]["is_scam"],
-                    "name": event["account"]["name"] if "name" in event["account"].keys() else None,
-                },
-            )
-
-            transaction, _ = Transaction.objects.update_or_create(
-                transaction_hex=event["transaction"],
-                account_address=account_address,
-                defaults={
-                    "transaction_hex": event["transaction"],
-                    "account_address": account_address,
-                    "timestamp": event["timestamp"],
-                },
-            )
+            for action in actions:
+                transaction, _ = Transaction.objects.update_or_create(
+                    transaction_hex=event["transaction"],
+                    account_address=account_address,
+                    defaults={
+                        "transaction_hex": event["transaction"],
+                        "account_address": account_address,
+                        "timestamp": event["timestamp"],
+                    },
+                )
 
             # Remove existing actions for this transaction
 
