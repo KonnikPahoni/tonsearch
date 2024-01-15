@@ -122,10 +122,7 @@ class NFTsView(APIView):
 
         objects_per_page = 16
 
-        nfts_filterset = NFT.objects.all()
-        # Sort by the number of transactions
-        nfts_filterset = nfts_filterset.annotate(num_transactions=Count("transactions", distinct=True))
-        nfts_filterset = nfts_filterset.order_by("-num_transactions")
+        nfts_filterset = NFT.objects.all().order_by("-num_transactions")
 
         paginator = Paginator(nfts_filterset, objects_per_page)
 

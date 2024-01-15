@@ -162,6 +162,7 @@ class NFT(models.Model):
     sale = models.JSONField(default=dict)
     verified = models.BooleanField(default=False)
     approved_by = models.CharField(max_length=1000, blank=True, null=True)
+    num_of_transactions = models.IntegerField(default=0, db_index=True)
     last_fetched_at = models.DateTimeField(blank=True, null=True)
 
     def get_url(self):
