@@ -76,10 +76,10 @@ class CollectionsView(APIView):
 
         base_context = get_base_context()
 
-        collections_filterset = Collection.objects.filter(last_fetched_at__isnull=False, nfts_count__gt=0)
+        collections_filterset = Collection.objects.filter(last_fetched_at__isnull=False, nfts_count__gt=0).order_by("nfts_count")
         # Sort by the number of addresses that own NFTs from the collection
-        collections_filterset = collections_filterset.annotate(num_addresses=Count("nfts__owner", distinct=True))
-        collections_filterset = collections_filterset.order_by("-num_addresses")
+        # collections_filterset = collections_filterset.annotate(num_addresses=Count("nfts__owner", distinct=True))
+        # collections_filterset = collections_filterset.order_by("-num_addresses")
 
         paginator = Paginator(collections_filterset, objects_per_page)
 
