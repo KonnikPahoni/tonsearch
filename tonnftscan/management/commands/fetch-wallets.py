@@ -11,12 +11,14 @@ from tonnftscan.utils import send_message_to_support_chat
 class Command(BaseCommand):
     help = f"Fetched all wallets."
 
+    FETCH_WALLETS_EVERY_N_DAYS = 14
+
     def handle(self, *args, **options):
         time_start = timezone.now()
 
         owners_list = NFT.objects.all().values_list("owner", flat=True).distinct()
 
-        last_fetched_at = timezone.now() - timezone.timedelta(days=3)
+        last_fetched_at = timezone.now() - timezone.timedelta(days=self.FETCH_WALLETS_EVERY_N_DAYS)
 
         addresses_filterset = Address.objects.filter(address__in=owners_list, updated_at__lte=last_fetched_at)
         logging.info(f"Found {addresses_filterset.count()} addresses to fetch.")
