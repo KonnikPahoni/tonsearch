@@ -281,6 +281,7 @@ def fetch_nft_service(nft: NFT):
 
     for event in events:
         for action in event["actions"]:
+            logging.info(f"Processing action {action} for NFT {nft.address}...")
             action_type = action["type"]
             action_status = action["status"]
             nft_id = action[action_type]["nft"]
@@ -288,19 +289,22 @@ def fetch_nft_service(nft: NFT):
             if nft_id != nft.address:
                 continue
 
-            sender_address_hex = action[action_type]["sender"]["address"]
-            recipient_address_hex = action[action_type]["recipient"]["address"]
+            try:
+                sender_address_hex = action[action_type]["sender"]["address"]
+                sender_address, _ = Address.objects.update_or_create(
+                    address=sender_address_hex,
+                    defaults={
+                        "address": sender_address_hex,
+                        "is_scam": action[action_type]["sender"]["is_scam"],
+                        "name": action[action_type]["sender"]["name"]
+                        if "name" in action[action_type]["sender"].keys()
+                        else None,
+                    },
+                )
+            except KeyError:
+                sender_address = None
 
-            sender_address, _ = Address.objects.update_or_create(
-                address=sender_address_hex,
-                defaults={
-                    "address": sender_address_hex,
-                    "is_scam": action[action_type]["sender"]["is_scam"],
-                    "name": action[action_type]["sender"]["name"]
-                    if "name" in action[action_type]["sender"].keys()
-                    else None,
-                },
-            )
+            recipient_address_hex = action[action_type]["recipient"]["address"]
 
             recipient_address, _ = Address.objects.update_or_create(
                 address=recipient_address_hex,
@@ -330,6 +334,7 @@ def fetch_nft_service(nft: NFT):
             )
 
     nft.last_fetched_at = timezone.now()
+    nft.num_of_transactions = NFTTransactionAction.objects.filter(nft=nft).count()
     nft.save()
 
 
