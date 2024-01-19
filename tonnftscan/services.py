@@ -402,7 +402,7 @@ def search_collections_service(query: str):
     """
     Searches for collections.
     """
-    wallets = Collection.objects.filter(name__icontains=query)
+    wallets = Collection.objects.filter(name__icontains=query).order_by("-last_fetched_at")
 
     return wallets
 
@@ -411,7 +411,7 @@ def search_nfts_service(query: str):
     """
     Searches for NFTs.
     """
-    nfts = NFT.objects.filter(name__icontains=query)
+    nfts = NFT.objects.filter(name__icontains=query).order_by("-last_fetched_at")
 
     return nfts
 
@@ -420,6 +420,6 @@ def search_wallets_service(query: str):
     """
     Searches for wallets.
     """
-    addresses = Address.objects.filter(name__icontains=query)
+    addresses = Address.objects.filter(name__icontains=query).order_by("-last_fetched_at")
 
     return addresses

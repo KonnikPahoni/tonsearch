@@ -143,23 +143,30 @@
 
                 </p>
 
-                <a data-toggle="collapse" href="#transactions" role="button" aria-expanded="false" aria-controls="transactions"><p
-                        class="lead d-inline-block">Transactions count: <b>{{ transactions_num }}</b></p></a>
 
-                <div class="collapse mb-3" id="transactions">
-                    <div class="card card-body">
-                        <ul>
-                            {% for transaction in transactions %}
-                                <li>
-                                    <span><a href="{{ site_url }}/address/{{ transaction.sender }}">{{ transaction.sender }}</a>
+
+                {% if transactions_num == 0 %}
+                                    <p class="lead">No transactions found.</p>
+                {% else %}
+                    <a data-toggle="collapse" href="#transactions" role="button" aria-expanded="false"
+                       aria-controls="transactions"><p
+                            class="lead d-inline-block">Transactions count: <b>{{ transactions_num }}</b></p></a>
+
+                    <div class="collapse mb-3" id="transactions">
+                        <div class="card card-body">
+                            <ul>
+                                {% for transaction in transactions %}
+                                    <li>
+                                    <span><a
+                                            href="{{ site_url }}/address/{{ transaction.sender }}">{{ transaction.sender }}</a>
                                     → <a href="{{ site_url }}/address/{{ transaction.recipient }}">{{ transaction.recipient }}</a></span>
-                                </li>
-                            {% endfor %}
-                        </ul>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
                     </div>
-                </div>
 
-
+                {% endif %}
             </div>
 
             <div class="container">

@@ -279,7 +279,7 @@ class AddressView(APIView):
         base_context = get_base_context()
         wallet = get_wallet_for_address_service(wallet_id)
 
-        if wallet.last_fetched_at is None:
+        if wallet.last_fetched_at is None or wallet.address_type not in AddressType.values:
             fetch_address_service(wallet)
 
         wallet_context = wallet.get_context()
@@ -297,7 +297,7 @@ class SearchView(APIView):
     permission_classes = (AllowAny,)
     http_method_names = ["get"]
 
-    def get(self, request):
+    def get(self, request, page_number=1):
         """
         Returns search results.
         """
@@ -322,19 +322,23 @@ class SearchView(APIView):
         wallets_paginator = Paginator(wallets_filterset, objects_per_page)
 
         try:
-            collection_objects = collections_paginator.page(1)
+            collection_objects = collections_paginator.page(page_number)
         except EmptyPage:
-            collection_objects = collections_paginator.page(collections_paginator.num_pages)
+            collection_objects = []
 
         try:
-            nft_objects = nfts_paginator.page(1)
+            nft_objects = nfts_paginator.page(page_number)
         except EmptyPage:
-            nft_objects = nfts_paginator.page(nfts_paginator.num_pages)
+            # Return empty page if there are no NFTs
+            nft_objects = []
 
         try:
-            wallet_objects = wallets_paginator.page(1)
+            wallet_objects = wallets_paginator.page(page_number)
         except EmptyPage:
-            wallet_objects = wallets_paginator.page(wallets_paginator.num_pages)
+            wallet_objects = []
+
+        # Calculate maximal number of pages
+        max_num_pages = max(collections_paginator.num_pages, nfts_paginator.num_pages, wallets_paginator.num_pages)
 
         logging.info(f"Found {collections_filterset.count()} collections for search query {query}")
 
@@ -347,7 +351,12 @@ class SearchView(APIView):
             "wallets": [wallet.get_context() for wallet in wallet_objects],
             "wallets_count": wallets_filterset.count(),
             "query": query,
+            "page_number": page_number,
+            "previous_page_number": page_number - 1 if page_number > 1 else None,
+            "next_page_number": page_number + 1 if page_number < max_num_pages else None,
+            "num_of_pages": max_num_pages,
         }
+
         logging.info(f"Context for search: {context}")
 
         return HttpResponse(template.render(context, request))
