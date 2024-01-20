@@ -13,7 +13,7 @@ from tonnftscan.utils import send_message_to_support_chat
 class Command(BaseCommand):
     help = f"Fetched NFTS."
 
-    FETCH_NFTS_EVERY_N_DAYS = 50
+    FETCH_NFTS_EVERY_N_DAYS = 90
 
     def handle(self, *args, **options):
         time_start = timezone.now()

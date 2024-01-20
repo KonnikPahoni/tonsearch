@@ -32,6 +32,7 @@ services:
       - ./tonnftscan:/tonnftscan
       - ./templates:/templates
       - ./.env:/.env
+      - ./cronjobs:/cronjobs
     links:
       - db
     depends_on:
