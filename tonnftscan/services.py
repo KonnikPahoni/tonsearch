@@ -8,7 +8,7 @@ from django.utils.timezone import make_aware
 from rest_framework.exceptions import NotFound
 
 from tonnftscan.constants import AddressType
-from tonnftscan.models import Collection, Address, NFT, NFTTransactionAction
+from tonnftscan.models import Collection, Address, NFT, NFTTransactionAction, CollectionSearch
 from tonnftscan.settings import TON_API_KEY
 from tonnftscan.utils import convert_user_friendly_address_to_hex
 

@@ -30,6 +30,7 @@ FIREBASE_CREDENTIALS = env("FIREBASE_CREDENTIALS")
 METABASE_SITE_URL = "http://localhost:8080"
 
 SITE_URL = env("SITE_URL")
+TONSEARCH_URL = env("TONSEARCH_URL", default="https://tonsearch.org")
 
 if ENV == "production":
     CACHES = {

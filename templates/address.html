@@ -88,24 +88,29 @@
                 {% if is_scam is True %}
                     <p class="lead text-danger"><b>This address was marked as spam.</b></p>
                 {% endif %}
-                <a data-toggle="collapse" href="#nfts" role="button" aria-expanded="false" aria-controls="nfts"><p
-                        class="lead d-inline-block">Nfts count: <b>{{ nfts_count }}</b></p></a>
 
-                <div class="collapse" id="nfts">
-                    <div class="card card-body">
-                        <ul>
-                            {% for nft in nfts %}
-                                <li><a href="{{ site_url }}/nft/{{ nft.user_friendly_id }}">
-                                    {% if nft.name is None or nft.name == '' %}
-                                        {{ nft.user_friendly_id }}
-                                    {% else %}
-                                        {{ nft.name }}
-                                    {% endif %}
-                                </a></li>
-                            {% endfor %}
-                        </ul>
+                {% if nfts_count > 0 %}
+                    <a data-toggle="collapse" href="#nfts" role="button" aria-expanded="false" aria-controls="nfts"><p
+                            class="lead d-inline-block">Nfts count: <b>{{ nfts_count }}</b></p></a>
+                    <div class="collapse" id="nfts">
+                        <div class="card card-body">
+                            <ul>
+                                {% for nft in nfts %}
+                                    <li><a href="{{ site_url }}/nft/{{ nft.user_friendly_id }}">
+                                        {% if nft.name is None or nft.name == '' %}
+                                            {{ nft.user_friendly_id }}
+                                        {% else %}
+                                            {{ nft.name }}
+                                        {% endif %}
+                                    </a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
                     </div>
-                </div>
+                {% else %}
+                    <p class="lead d-inline-block">Nfts count: <b>{{ nfts_count }}</b></p>
+                {% endif %}
+
             </div>
 
         </div>

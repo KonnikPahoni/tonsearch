@@ -80,8 +80,8 @@ class Collection(models.Model):
     image = models.CharField(max_length=10000)
     cover_image = models.CharField(max_length=10000)
     external_url = models.CharField(max_length=10000)
-    last_fetched_at = models.DateTimeField(blank=True, null=True)
     nfts_count = models.IntegerField(default=0)
+    last_fetched_at = models.DateTimeField(blank=True, null=True)
     pushed_to_google_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
@@ -235,3 +235,26 @@ class NFTTransactionAction(models.Model):
         }
 
         return context
+
+
+class CollectionSearch(models.Model):
+    """
+    Represents a collection search.
+    """
+
+    collection = models.OneToOneField(Collection, on_delete=models.CASCADE, related_name="search_data")
+    google_impressions_total = models.IntegerField(default=0, help_text="Number of impressions in Google")
+    google_impressions_last_30_days = models.IntegerField(
+        default=0, help_text="Number of impressions in Google for the last 30 days"
+    )
+    google_clicks_total = models.IntegerField(default=0, help_text="Number of clicks in Google")
+    google_clicks_last_30_days = models.IntegerField(
+        default=0, help_text="Number of clicks in Google for the last 30 days"
+    )
+    google_clicks_last_7_days = models.IntegerField(
+        default=0, help_text="Number of clicks in Google for the last 7 days"
+    )
+    google_ctr_total = models.FloatField(default=0, help_text="CTR in Google")
+    google_ctr_last_30_days = models.FloatField(default=0, help_text="CTR in Google for the last 30 days")
+    google_position_total = models.FloatField(default=0, help_text="Position in Google")
+    google_position_last_30_days = models.FloatField(default=0, help_text="Position in Google for the last 30 days")
