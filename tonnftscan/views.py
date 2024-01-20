@@ -45,9 +45,9 @@ class IndexView(APIView):
 
         template = loader.get_template("index.html")
 
-        collections_filterset = Collection.objects.filter(last_fetched_at__isnull=False, nfts_count__gt=0)
-        collections_filterset = collections_filterset.annotate(num_addresses=Count("nfts__owner", distinct=True))
-        collections_filterset = collections_filterset.order_by("-num_addresses")
+        collections_filterset = Collection.objects.filter(last_fetched_at__isnull=False, nfts_count__gt=0).order_by(
+            "-nfts_count"
+        )
 
         collections_context = [collection.get_context() for collection in collections_filterset[:16]]
 
