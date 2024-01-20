@@ -1,5 +1,7 @@
 import logging
 import time
+from itertools import chain
+
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
@@ -17,13 +19,14 @@ class Command(BaseCommand):
         time_start = timezone.now()
         last_fetched_at = timezone.now() - timezone.timedelta(days=self.FETCH_NFTS_EVERY_N_DAYS)
 
-        nfts_filterset = NFT.objects.filter(updated_at__lte=last_fetched_at)
-        logging.info(f"Found {nfts_filterset.count()} NFTs to fetch.")
+        nfts_filterset = NFT.objects.filter(last_fetched_at__lte=last_fetched_at)
+        unfetched_nfts_filterset = NFT.objects.filter(last_fetched_at=None)
+        logging.info(f"Found {nfts_filterset.count() + unfetched_nfts_filterset.count()} NFts to fetch.")
 
         nfts_fetched = 0
-        nfts_to_fetch_max = 100000
+        nfts_to_fetch_max = 50000
 
-        for nft in nfts_filterset:
+        for nft in chain(unfetched_nfts_filterset, nfts_filterset):
             try:
                 fetch_nft_service(nft)
                 nfts_fetched += 1
@@ -32,6 +35,9 @@ class Command(BaseCommand):
                 send_message_to_support_chat(f"Failed to fetch {nft.address} with error: {e}")
                 break
             time.sleep(1)
+
+            if nfts_fetched % 100 == 0:
+                logging.info(f"Fetched {nfts_fetched} NFTs.")
 
             if nfts_fetched >= nfts_to_fetch_max:
                 logging.info(f"Fetched {nfts_fetched} NFTs. Stopping.")

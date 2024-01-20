@@ -31,7 +31,7 @@ def sync_google_search_queries():
 
     # Get all-time results
     search_results = get_collection_search_for_interval_service(
-        start_datetime=datetime(2024, 1, 1),
+        start_datetime=datetime(2024, 1, 10),
         end_datetime=timezone.now(),
     )
 
@@ -96,8 +96,9 @@ def get_collection_search_for_interval_service(start_datetime: datetime, end_dat
         "dimensions": ["page"],
         "rowLimit": 20000,
     }
-    response = execute_request(searchconsole, TONSEARCH_URL, request)
-    print(response)
+    logging.info(f"Requesting search data for {TONSEARCH_URL} between {start_datetime} and {end_datetime}...")
+    response = execute_request(searchconsole, f"{TONSEARCH_URL}/", request)
+    logging.info(f"Got response: {response}")
 
     search_results = {}
 
