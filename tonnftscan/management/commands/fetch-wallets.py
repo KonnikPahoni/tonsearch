@@ -24,7 +24,7 @@ class Command(BaseCommand):
         logging.info(f"Found {addresses_filterset.count()} addresses to fetch.")
 
         wallets_fetched = 0
-        wallets_to_fetch_max = 100000
+        wallets_to_fetch_max = 50000
 
         for wallet in addresses_filterset:
             try:
@@ -35,6 +35,9 @@ class Command(BaseCommand):
                 send_message_to_support_chat(f"Failed to fetch {wallet.address} with error: {e}")
                 break
             time.sleep(1)
+
+            if wallets_fetched % 1000 == 0:
+                logging.info(f"Fetched {wallets_fetched} wallets.")
 
             if wallets_fetched >= wallets_to_fetch_max:
                 logging.info(f"Fetched {wallets_fetched} wallets. Stopping.")
