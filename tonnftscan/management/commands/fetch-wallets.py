@@ -9,7 +9,7 @@ from tonnftscan.utils import send_message_to_support_chat
 
 
 class Command(BaseCommand):
-    help = f"Fetched all wallets."
+    help = f"Fetched wallets_to_fetch_max wallets."
 
     FETCH_WALLETS_EVERY_N_DAYS = 14
 
@@ -24,7 +24,7 @@ class Command(BaseCommand):
         logging.info(f"Found {addresses_filterset.count()} addresses to fetch.")
 
         wallets_fetched = 0
-        wallets_to_fetch_max = 50000
+        wallets_to_fetch_max = 25000
 
         for wallet in addresses_filterset:
             try:
