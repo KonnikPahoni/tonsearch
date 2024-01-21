@@ -9,6 +9,11 @@ from tonnftscan.models import CollectionSearch
 from tonnftscan.services import get_collection_for_address_service
 from tonnftscan.settings import TONSEARCH_URL
 
+add_site = searchconsole.sites().add(siteUrl=TONSEARCH_URL).execute()
+logging.info(f"Add site {TONSEARCH_URL}: {add_site}")
+get_site = searchconsole.sites().get(siteUrl=TONSEARCH_URL).execute()
+logging.info(f"Get site {TONSEARCH_URL}: {get_site}")
+
 
 def execute_request(service, property_uri, request):
     """Executes a searchAnalytics.query request.
@@ -25,10 +30,6 @@ def execute_request(service, property_uri, request):
 
 
 def sync_google_search_queries():
-    add_site = searchconsole.sites().add(siteUrl=TONSEARCH_URL).execute()
-    get_site = searchconsole.sites().get(siteUrl=TONSEARCH_URL).execute()
-    logging.info(get_site)
-
     # Get all-time results
     search_results = get_collection_search_for_interval_service(
         start_datetime=datetime(2024, 1, 10),

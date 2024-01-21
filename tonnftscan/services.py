@@ -335,6 +335,14 @@ def fetch_nft_service(nft: NFT):
 
     nft.last_fetched_at = timezone.now()
     nft.num_of_transactions = NFTTransactionAction.objects.filter(nft=nft).count()
+
+    # Identify the last recipient of the NFT
+    try:
+        last_transaction = NFTTransactionAction.objects.filter(nft=nft).order_by("-timestamp")[0]
+        nft.owner = last_transaction.recipient
+    except IndexError:
+        pass
+
     nft.save()
 
 

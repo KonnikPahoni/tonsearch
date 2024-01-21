@@ -146,7 +146,7 @@
 
 
                 {% if transactions_num == 0 %}
-                                    <p class="lead">No transactions found.</p>
+                    <p class="lead">No transactions found.</p>
                 {% else %}
                     <a data-toggle="collapse" href="#transactions" role="button" aria-expanded="false"
                        aria-controls="transactions"><p
@@ -157,9 +157,26 @@
                             <ul>
                                 {% for transaction in transactions %}
                                     <li>
-                                    <span><a
-                                            href="{{ site_url }}/address/{{ transaction.sender }}">{{ transaction.sender }}</a>
-                                    → <a href="{{ site_url }}/address/{{ transaction.recipient }}">{{ transaction.recipient }}</a></span>
+                                    <span>
+                                        {% if transaction.sender is not None %}
+                                            <a
+                                                    href="{{ site_url }}/address/{{ transaction.sender }}">
+                                            {% if transaction.sender_name is not None %}
+                                                {{ transaction.sender_name }}
+                                            {% else %}
+                                                {{ transaction.sender }}
+                                            {% endif %}
+                                            </a>
+                                        {% else %}
+                                        {% endif %}
+                                        → <a
+                                            href="{{ site_url }}/address/{{ transaction.recipient }}">
+                                        {% if transaction.recipient_name is not None %}
+                                            {{ transaction.recipient_name }}
+                                        {% else %}
+                                            {{ transaction.recipient }}
+                                        {% endif %}
+                                    </a></span>
                                     </li>
                                 {% endfor %}
                             </ul>

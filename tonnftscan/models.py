@@ -26,6 +26,7 @@ class Address(models.Model):
     interfaces = ArrayField(models.CharField(max_length=1000), default=list)
     icon = models.CharField(max_length=10000, blank=True, null=True)
     address_type = models.CharField(max_length=256, blank=True, null=True, choices=AddressType.choices)
+    num_of_nft_transactions = models.IntegerField(default=0, db_index=True)
 
     def __str__(self):
         return f"{self.address}"
@@ -230,7 +231,9 @@ class NFTTransactionAction(models.Model):
         context = {
             "hex_id": self.transaction_hex,
             "sender": convert_hex_address_to_user_friendly(self.sender.address) if self.sender else None,
+            "sender_name": self.sender.name if self.sender else None,
             "recipient": convert_hex_address_to_user_friendly(self.recipient.address) if self.recipient else None,
+            "recipient_name": self.recipient.name if self.recipient else None,
             "timestamp": self.timestamp,
         }
 

@@ -1,9 +1,10 @@
 import json
+import logging
 
 from googleapiclient.discovery import build
 from oauth2client.service_account import ServiceAccountCredentials
 
-from tonnftscan.settings import FIREBASE_CREDENTIALS
+from tonnftscan.settings import FIREBASE_CREDENTIALS, TONSEARCH_URL
 
 service_account_creds = ServiceAccountCredentials.from_json_keyfile_dict(
     keyfile_dict=json.loads(FIREBASE_CREDENTIALS), scopes=["https://www.googleapis.com/auth/webmasters"]
