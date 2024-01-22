@@ -12,7 +12,7 @@ EXPOSE 8008
 COPY . /
 RUN ls var
 
-RUN chmod 0644 cronjobs && chmod 744 /var/run/crond.pid
+RUN chmod 0644 cronjobs
 
 
 RUN apt-get update && apt-get install -y cron
