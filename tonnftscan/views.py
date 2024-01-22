@@ -122,13 +122,14 @@ class NFTsView(APIView):
         """
         Returns the NFTs page.
         """
-
+        last_indicator = DailyIndicator.objects.order_by("-date").first()
+        logging.info(f"Request: {request}")
         template = loader.get_template("nfts.html")
         base_context = get_base_context()
 
         objects_per_page = 16
 
-        nfts_filterset = NFT.objects.all().order_by("-num_of_transactions")
+        nfts_filterset = NFT.objects.order_by("-num_of_transactions")
 
         paginator = Paginator(nfts_filterset, objects_per_page)
 
@@ -142,7 +143,7 @@ class NFTsView(APIView):
             # If the page is out of range, display the last page
             objects = paginator.page(paginator.num_pages)
 
-        nfts = [nft.get_context() for nft in objects]
+        nfts = [nft.get_context(with_collection=False) for nft in objects]
 
         context = {
             **base_context,
@@ -151,7 +152,7 @@ class NFTsView(APIView):
             "previous_page_number": page_number - 1 if page_number > 1 else None,
             "next_page_number": page_number + 1 if page_number < paginator.num_pages else None,
             "num_of_pages": paginator.num_pages,
-            "total_nfts": nfts_filterset.count(),
+            "total_nfts": last_indicator.collection_nfts_count,
         }
 
         return HttpResponse(template.render(context, request))

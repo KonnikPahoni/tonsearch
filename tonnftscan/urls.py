@@ -35,7 +35,7 @@ urlpatterns = [
         name="collection-cover",
     ),
     path("collection/<str:collection_id>", cache_page(60 * 60 * 24)(CollectionView.as_view()), name="collection"),
-    path("nfts", NFTsView.as_view(), name="nfts"),
+    re_path("nfts", NFTsView.as_view(), name="nfts"),
     path("nfts/<int:page_number>", NFTsView.as_view(), name="nfts"),
     path("nft/<str:nft_id>/image", cache_page(60 * 60 * 24 * 7)(NFTImageView.as_view()), name="nft-image"),
     path("nft/<str:nft_id>", cache_page(60 * 60 * 24)(NFTView.as_view()), name="nft"),
