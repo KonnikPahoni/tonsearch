@@ -4,7 +4,8 @@ WORKDIR /
 
 COPY requirements.txt /
 
-RUN pip install -r requirements.txt
+RUN pip3 config --user set global.progress_bar off
+RUN pip3 install -r requirements.txt
 
 EXPOSE 8008
 
