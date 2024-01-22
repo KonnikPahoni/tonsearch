@@ -1,6 +1,9 @@
+import json
 import os
 from pathlib import Path
 import environ
+import google
+from google.cloud.logging_v2.handlers import CloudLoggingHandler, setup_logging
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 
@@ -31,6 +34,7 @@ METABASE_SITE_URL = "http://localhost:8080"
 
 SITE_URL = env("SITE_URL")
 TONSEARCH_URL = env("TONSEARCH_URL", default="https://tonsearch.org")
+
 
 if ENV == "production":
     CACHES = {
@@ -84,6 +88,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "tonnftscan.middleware.GoogleLoggingMiddleware",
 ]
 
 ROOT_URLCONF = "tonnftscan.urls"
@@ -177,3 +182,21 @@ LOGGING = {
         "level": "DEBUG",
     },
 }
+
+LOG_NAME = "Python-Logs"
+
+if ENV not in ("test", "dev"):
+    google_logging_client = google.cloud.logging.Client.from_service_account_info(json.loads(FIREBASE_CREDENTIALS))
+    logger = google_logging_client.logger(LOG_NAME)
+    handler = CloudLoggingHandler(google_logging_client, name="root")
+    setup_logging(handler)
+
+    LOGGING["handlers"]["google_cloud"] = {
+        "class": "google.cloud.logging.handlers.CloudLoggingHandler",
+        "client": google_logging_client,
+        "level": "INFO",
+    }
+    # Everything is OK with the following line
+    LOGGING["root"]["handlers"].append("google_cloud")
+else:
+    logger = None

@@ -23,6 +23,7 @@ httplib2 = "==0.22.0"
 python-telegram-bot = "==13.14"
 google-api-python-client = "==2.107.0"
 oauth2client = "==4.1.3"
+google-cloud-logging = "==3.5.0"
 
 [scripts]
 start = "pipenv run python manage.py runserver 8008"
