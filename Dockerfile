@@ -10,6 +10,7 @@ RUN pip3 install -r requirements.txt
 EXPOSE 8008
 
 COPY . /
+RUN ls var
 
 RUN chmod 0644 cronjobs && chmod 744 /var/run/crond.pid
 
