@@ -257,6 +257,7 @@ def fetch_address_service(address: Address):
         NFTTransactionAction.objects.filter(sender=address).count()
         + NFTTransactionAction.objects.filter(recipient=address).count()
     )
+    address.nfts_count = NFT.objects.filter(owner=address).count()
 
     address.save()
 

@@ -27,6 +27,7 @@ class Address(models.Model):
     icon = models.CharField(max_length=10000, blank=True, null=True)
     address_type = models.CharField(max_length=256, blank=True, null=True, choices=AddressType.choices)
     num_of_nft_transactions = models.IntegerField(default=0, db_index=True)
+    nfts_count = models.IntegerField(default=0, db_index=True)
 
     def __str__(self):
         return f"{self.address}"
