@@ -4,7 +4,7 @@ WORKDIR /
 
 COPY requirements.txt /
 
-RUN pip3 install --no-progress-bar -r requirements.txt
+RUN pip3 install -r requirements.txt
 
 EXPOSE 8008
 
