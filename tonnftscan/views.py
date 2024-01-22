@@ -15,7 +15,7 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 from tonnftscan.constants import REL_NOFOLLOW_EXCEPTIONS, AddressType
 from tonnftscan.handlers import get_sitemap_handler
-from tonnftscan.models import Collection, NFT, Address
+from tonnftscan.models import Collection, NFT, Address, DailyIndicator
 from tonnftscan.services import (
     get_collection_for_address_service,
     get_nft_for_address_service,
@@ -46,18 +46,21 @@ class IndexView(APIView):
 
         template = loader.get_template("index.html")
 
-        collections_filterset = Collection.objects.filter(last_fetched_at__isnull=False, nfts_count__gt=0).order_by(
-            "-nfts_count"
-        )
+        collections_filterset = Collection.objects.filter(
+            last_fetched_at__isnull=False, collection_search__isnull=False
+        ).order_by("-collection_search__google_impressions_last_30_days")
 
         collections_context = [collection.get_context() for collection in collections_filterset[:16]]
 
+        # Get indicator with the latest date
+        last_indicator = DailyIndicator.objects.order_by("-date").first()
+
         context = {
             **get_base_context(),
-            "collections_num": collections_filterset.count(),
-            "nfts_num": NFT.objects.count(),
-            "wallets_num": Address.objects.filter(address_type=AddressType.WALLET).count(),
-            "nfts_on_sale_num": NFT.objects.all().exclude(sale={}).count(),
+            "collections_num": last_indicator.collections_count,
+            "nfts_num": last_indicator.collection_nfts_count,
+            "wallets_num": last_indicator.nft_holders_count,
+            "nfts_on_sale_num": last_indicator.nfts_on_sale_count,
             "collections": collections_context,
         }
 

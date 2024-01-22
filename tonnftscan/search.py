@@ -37,7 +37,6 @@ def sync_google_search_queries():
     )
 
     for key, item in search_results.items():
-        print(key, item)
         try:
             collection = get_collection_for_address_service(key)
         except NotFound:
@@ -104,14 +103,13 @@ def get_collection_search_for_interval_service(start_datetime: datetime, end_dat
     search_results = {}
 
     for page in response["rows"] if "rows" in response else []:
-        print(page)
         if f"{TONSEARCH_URL}/collection/" in page["keys"][0]:
             collection_id = page["keys"][0].split("/")[-1]
             search_results[collection_id] = {
-                "google_impressions": page["impressions"],
-                "google_clicks": page["clicks"],
-                "google_ctr": page["ctr"],
-                "google_position": page["position"],
+                "impressions": page["impressions"],
+                "clicks": page["clicks"],
+                "ctr": page["ctr"],
+                "position": page["position"],
             }
 
     return search_results
