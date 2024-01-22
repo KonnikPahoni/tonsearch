@@ -253,6 +253,10 @@ def fetch_address_service(address: Address):
     address.address_type = address_type
 
     address.last_fetched_at = timezone.now()
+    address.num_of_nft_transactions = (
+        NFTTransactionAction.objects.filter(sender=address).count()
+        + NFTTransactionAction.objects.filter(recipient=address).count()
+    )
 
     address.save()
 
