@@ -2,7 +2,7 @@ import json
 import os
 from pathlib import Path
 import environ
-import google
+import google.cloud.logging
 from google.cloud.logging_v2.handlers import CloudLoggingHandler, setup_logging
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
