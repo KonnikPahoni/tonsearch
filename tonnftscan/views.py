@@ -172,8 +172,7 @@ class AddressesView(APIView):
 
         objects_per_page = 16
 
-        # nfts_owners_list = list(NFT.objects.filter(owner__isnull=False).values_list("owner", flat=True).distinct())
-        addresses_filterset = Address.objects.filter(last_fetched_at__isnull=False).order_by("icon")
+        addresses_filterset = Address.objects.order_by("-nfts_count", "icon")
 
         paginator = Paginator(addresses_filterset, objects_per_page)
 
@@ -187,7 +186,7 @@ class AddressesView(APIView):
             # If the page is out of range, display the last page
             objects = paginator.page(paginator.num_pages)
 
-        wallets = [wallet.get_context() for wallet in objects]
+        wallets = [wallet.get_context(with_nfts=False) for wallet in objects]
 
         context = {
             **base_context,
@@ -262,8 +261,8 @@ class NFTView(APIView):
         context = {
             **nft_context,
             **base_context,
-            "owner": nft.owner.get_context() if nft.owner else None,
-            "collection_owner": nft.collection.owner.get_context() if nft.collection.owner else None,
+            "owner": nft.owner.get_context(with_nfts=False) if nft.owner else None,
+            "collection_owner": nft.collection.owner.get_context(with_nfts=False) if nft.collection.owner else None,
         }
         logging.info(f"Context for nft: {context}")
 

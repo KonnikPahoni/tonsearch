@@ -35,7 +35,7 @@ class Address(models.Model):
     def get_url(self):
         return f"https://tonsearch.org/address/{convert_hex_address_to_user_friendly(self.address)}"
 
-    def get_context(self):
+    def get_context(self, with_nfts=True):
         """
         Returns context for a wallet.
         """
@@ -44,8 +44,6 @@ class Address(models.Model):
 
         if image is None:
             image = f"{SITE_URL}/staticfiles/default_image.png"
-
-        nfts_count = NFT.objects.filter(owner=self).count()
 
         context = {
             "hex_id": self.address,
@@ -59,9 +57,12 @@ class Address(models.Model):
             "icon": image,
             "is_scam": self.is_scam,
             "address_type": self.address_type,
-            "nfts_count": nfts_count,
-            "nfts": [nft.get_context(with_collection=False) for nft in NFT.objects.filter(owner=self)],
+            "nfts_count": self.nfts_count,
         }
+
+        if with_nfts is True:
+            nfts_filterset = NFT.objects.filter(owner=self).order_by("-num_of_transactions")
+            context["nfts"] = [nft.get_context(with_collection=False) for nft in nfts_filterset[:100]]
 
         return context
 

@@ -286,7 +286,7 @@ def fetch_nft_service(nft: NFT):
 
     for event in events:
         for action in event["actions"]:
-            logging.info(f"Processing action {action} for NFT {nft.address}...")
+            logging.debug(f"Processing action {action} for NFT {nft.address}...")
             action_type = action["type"]
             action_status = action["status"]
             nft_id = action[action_type]["nft"]
