@@ -1,5 +1,7 @@
 import logging
 import time
+import traceback
+
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
@@ -31,7 +33,8 @@ class Command(BaseCommand):
                 fetch_address_service(wallet)
                 wallets_fetched += 1
             except Exception as e:
-                logging.error(f"Failed to fetch {wallet.address} with error: {e}")
+                traceback_str = traceback.format_exc()
+                logging.error(f"Failed to fetch {wallet.address} with error: {traceback_str}")
                 send_message_to_support_chat(f"Failed to fetch {wallet.address} with error: {e}")
                 break
             time.sleep(1)
