@@ -1,5 +1,6 @@
 import logging
 import time
+import traceback
 from itertools import chain
 
 from django.core.management.base import BaseCommand
@@ -31,7 +32,8 @@ class Command(BaseCommand):
                 fetch_nft_service(nft)
                 nfts_fetched += 1
             except Exception as e:
-                logging.error(f"Failed to fetch {nft.address} with error: {e}")
+                traceback_str = traceback.format_exc()
+                logging.error(f"Failed to fetch NFT {nft.address} with error: {traceback_str}")
                 send_message_to_support_chat(f"Failed to fetch {nft.address} with error: {e}")
                 break
             time.sleep(1)
@@ -45,7 +47,5 @@ class Command(BaseCommand):
 
         time_end = timezone.now()
 
-        message = (
-            f"Fetched {nfts_filterset.count()} new NFTs at {time_end}. Took {(time_end - time_start).seconds / 60} min."
-        )
+        message = f"Fetched {nfts_fetched} new NFTs at {time_end}. Took {(time_end - time_start).seconds / 60} min."
         send_message_to_support_chat(message, tech_chat=True)

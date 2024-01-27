@@ -34,7 +34,7 @@ class Command(BaseCommand):
                 wallets_fetched += 1
             except Exception as e:
                 traceback_str = traceback.format_exc()
-                logging.error(f"Failed to fetch {wallet.address} with error: {traceback_str}")
+                logging.error(f"Failed to fetch address {wallet.address} with error: {traceback_str}")
                 send_message_to_support_chat(f"Failed to fetch {wallet.address} with error: {e}")
                 break
             time.sleep(1)
@@ -48,5 +48,7 @@ class Command(BaseCommand):
 
         time_end = timezone.now()
 
-        message = f"Fetched {addresses_filterset.count()} new wallets at {time_end}. Took {(time_end - time_start).seconds / 60} min."
+        message = (
+            f"Fetched {wallets_fetched} new wallets at {time_end}. Took {(time_end - time_start).seconds / 60} min."
+        )
         send_message_to_support_chat(message, tech_chat=True)
