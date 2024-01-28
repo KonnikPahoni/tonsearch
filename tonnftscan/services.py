@@ -200,8 +200,13 @@ def fetch_address_service(address: Address):
             "Authorization": f"Bearer {TON_API_KEY}",
         },
     )
-    response_json = response.json()
-    logging.info(f"Processing address {address.address}: {response_json}")
+    logging.info(f"Processing address {address.address}: {response.text}")
+
+    try:
+        response_json = response.json()
+    except Exception as e:
+        logging.error(f"Error parsing response: {e}. Response: {response.text}")
+        return
 
     if "balance" not in response_json.keys():
         logging.error(f"Could not fetch address {address.address}: {response_json}")
