@@ -6,6 +6,7 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils import timezone
 from django.views.generic import RedirectView
+from rest_framework.exceptions import NotFound
 from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
 from django.template import loader
@@ -250,8 +251,12 @@ class NFTView(APIView):
 
         template = loader.get_template("nft.html")
 
+        try:
+            nft = get_nft_for_address_service(nft_id)
+        except NFT.DoesNotExist:
+            raise NotFound(f"NFT with address {nft_id} does not exist.")
+
         base_context = get_base_context()
-        nft = get_nft_for_address_service(nft_id)
 
         if nft.last_fetched_at is None or timezone.now() - nft.last_fetched_at > timezone.timedelta(days=7):
             fetch_nft_service(nft)

@@ -4,6 +4,7 @@ import traceback
 from itertools import chain
 
 from django.core.management.base import BaseCommand
+from django.db.models import Q
 from django.utils import timezone
 
 from tonnftscan.models import NFT
@@ -20,16 +21,18 @@ class Command(BaseCommand):
         time_start = timezone.now()
         last_fetched_at = timezone.now() - timezone.timedelta(days=self.FETCH_NFTS_EVERY_N_DAYS)
 
-        nfts_filterset = NFT.objects.filter(last_fetched_at__lte=last_fetched_at)
-        unfetched_nfts_filterset = NFT.objects.filter(last_fetched_at=None)
-        logging.info(f"Found {nfts_filterset.count() + unfetched_nfts_filterset.count()} NFts to fetch.")
+        # Create a filterset of NFTs that have not been fetched yet or have not been fetched for a long time
+        nfts_filterset = NFT.objects.filter(Q(last_fetched_at__lte=last_fetched_at) | Q(last_fetched_at=None))
+
+        logging.info(f"Found {nfts_filterset.count()} NFts to fetch.")
 
         nfts_fetched = 0
-        nfts_to_fetch_max = 50000
+        nfts_to_fetch_max = 25000
 
-        for nft in chain(unfetched_nfts_filterset, nfts_filterset):
+        for nft in nfts_filterset[:nfts_to_fetch_max]:
             try:
                 fetch_nft_service(nft)
+                logging.info(f"Fetched NFT {nft.address}")
                 nfts_fetched += 1
             except Exception as e:
                 traceback_str = traceback.format_exc()

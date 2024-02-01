@@ -366,7 +366,7 @@ def get_collection_for_address_service(collection_id: str) -> Collection:
     elif len(collection_id) == 48:
         # This is a user-friendly address
         hex_address = convert_user_friendly_address_to_hex(collection_id)
-        logging.info(f"Converted {collection_id} to {hex_address}")
+        logging.debug(f"Converted {collection_id} to {hex_address}")
         collection = Collection.objects.get(address=hex_address)
     else:
         logging.error(f"Invalid collection ID: {collection_id}")
@@ -386,7 +386,7 @@ def get_nft_for_address_service(nft_id: str) -> NFT:
     elif len(nft_id) == 48:
         # This is a user-friendly address
         hex_address = convert_user_friendly_address_to_hex(nft_id)
-        logging.info(f"Converted {nft_id} to {hex_address}")
+        logging.debug(f"Converted {nft_id} to {hex_address}")
         nft = NFT.objects.get(address=hex_address)
     else:
         logging.error(f"Invalid NFT ID: {nft_id}")
@@ -406,7 +406,7 @@ def get_wallet_for_address_service(wallet_id: str) -> Address:
     elif len(wallet_id) == 48:
         # This is a user-friendly address
         hex_address = convert_user_friendly_address_to_hex(wallet_id)
-        logging.info(f"Converted {wallet_id} to {hex_address}")
+        logging.debug(f"Converted {wallet_id} to {hex_address}")
         wallet = Address.objects.get(address=hex_address)
     else:
         logging.error(f"Invalid wallet ID: {wallet_id}")
