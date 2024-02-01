@@ -269,7 +269,7 @@ class NFTView(APIView):
             "owner": nft.owner.get_context(with_nfts=False) if nft.owner else None,
             "collection_owner": nft.collection.owner.get_context(with_nfts=False) if nft.collection.owner else None,
         }
-        logging.info(f"Context for nft: {context}")
+        logging.debug(f"Context for nft: {context}")
 
         return HttpResponse(template.render(context, request))
 
