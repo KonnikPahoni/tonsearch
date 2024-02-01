@@ -283,8 +283,11 @@ def fetch_nft_service(nft: NFT):
         },
     )
     response_json = response.json()
-
-    events = response_json["events"]
+    try:
+        events = response_json["events"]
+    except KeyError:
+        logging.error(f"Could not find events for NFT {nft.address}: {response_json}")
+        return
 
     if len(events) > 1000:
         raise Exception(f"Too many events for NFT {nft.address}")
