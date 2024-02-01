@@ -31,9 +31,16 @@ class Command(BaseCommand):
         collections_filterset = Collection.objects.filter(last_fetched_at__isnull=True)
 
         for collection in collections_filterset:
-            logging.info(f"Processing collection {collection}...")
-            fetch_collection_service(collection)
-            logging.info(f"Collection {collection} processed.")
+            try:
+                logging.info(f"Processing collection {collection}...")
+                fetch_collection_service(collection)
+                logging.info(f"Collection {collection} processed.")
+            except Exception as e:
+                logging.error(f"Failed to fetch collection {collection}: {e}")
+                send_message_to_support_chat(
+                    f"Failed to fetch collection {collection} after {(timezone.now() - time_start).seconds / 60} min: {e}"
+                )
+                break
 
         message = f"Fetched {collections_filterset.count()} new collections at {time_end}."
         send_message_to_support_chat(message, tech_chat=True)
