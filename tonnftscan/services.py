@@ -131,7 +131,11 @@ def fetch_collection_service(collection: Collection):
 
         logging.info(f"Processing collection {collection.address}...")
 
-        nft_items = response_json["nft_items"]
+        try:
+            nft_items = response_json["nft_items"]
+        except KeyError:
+            logging.error(f"Could not find nft_items for collection {collection.address}: {response_json}")
+            break
 
         if len(nft_items) == 0:
             break
