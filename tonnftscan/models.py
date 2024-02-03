@@ -157,7 +157,7 @@ class NFT(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    name = models.CharField(max_length=2000, db_index=True)
+    name = models.CharField(max_length=2000, db_index=True, blank=True, null=True)
     description = models.CharField(max_length=10000, db_index=True)
     image = models.CharField(max_length=10000)
     external_url = models.CharField(max_length=10000)
