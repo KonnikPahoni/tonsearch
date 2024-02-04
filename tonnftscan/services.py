@@ -32,7 +32,12 @@ def fetch_all_collections_service():
             },
         )
         response_json = response.json()
-        collections = response_json["nft_collections"]
+
+        try:
+            collections = response_json["nft_collections"]
+        except KeyError:
+            logging.error(f"Could not find nft_collections: {response_json}")
+            break
 
         if len(collections) == 0:
             break
