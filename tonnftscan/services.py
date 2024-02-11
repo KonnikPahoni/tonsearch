@@ -8,7 +8,7 @@ from django.utils.timezone import make_aware
 from rest_framework.exceptions import NotFound
 
 from tonnftscan.constants import AddressType
-from tonnftscan.models import Collection, Address, NFT, NFTTransactionAction, CollectionSearch, DailyIndicator
+from tonnftscan.models import Collection, Address, NFT, NFTTransactionAction
 from tonnftscan.settings import TON_API_KEY
 from tonnftscan.utils import convert_user_friendly_address_to_hex
 
@@ -453,27 +453,3 @@ def search_wallets_service(query: str):
     addresses = Address.objects.filter(name__icontains=query).order_by("-last_fetched_at")
 
     return addresses
-
-
-def calculate_daily_indicators_service():
-    """
-    Calculate daily indicators.
-    """
-    date = timezone.now().date()
-    collections_count = Collection.objects.count()
-    collection_nfts_count = NFT.objects.filter(collection__isnull=False).count()
-    nft_holders_count = Address.objects.filter(nfts__isnull=False).distinct().count()
-    nfts_on_sale_count = NFT.objects.exclude(sale={}).count()
-
-    daily_indicator, created = DailyIndicator.objects.update_or_create(
-        date=date,
-        defaults={
-            "date": date,
-            "collections_count": collections_count,
-            "collection_nfts_count": collection_nfts_count,
-            "nft_holders_count": nft_holders_count,
-            "nfts_on_sale_count": nfts_on_sale_count,
-        },
-    )
-    if created is True:
-        logging.info(f"Created daily indicator for {date}: {daily_indicator}")

@@ -70,6 +70,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "django_better_admin_arrayfield",
     "tonnftscan",
+    "indicators",
 ]
 
 if ENV != "test":

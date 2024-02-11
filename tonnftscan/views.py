@@ -16,7 +16,8 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 from tonnftscan.constants import REL_NOFOLLOW_EXCEPTIONS, AddressType
 from tonnftscan.handlers import get_sitemap_handler
-from tonnftscan.models import Collection, NFT, Address, DailyIndicator
+from tonnftscan.models import Collection, NFT, Address
+from indicators.models import DailyIndicator
 from tonnftscan.services import (
     get_collection_for_address_service,
     get_nft_for_address_service,

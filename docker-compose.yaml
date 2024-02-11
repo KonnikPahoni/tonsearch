@@ -30,6 +30,7 @@ services:
     volumes:
       - ./var:/var
       - ./tonnftscan:/tonnftscan
+      - ./indicators:/indicators
       - ./templates:/templates
       - ./.env:/.env
     links:

@@ -12,3 +12,10 @@ REL_NOFOLLOW_EXCEPTIONS = [
 class AddressType(models.TextChoices):
     WALLET = "wallet", "Wallet"
     NFT_SALE = "nft_sale", "NFT Sale"
+
+
+NULL_ADDRESSES_LIST = [
+    "EQAREREREREREREREREREREREREREREREREREREREREREeYT",
+    "EQD__________________________________________0vo",
+    "EQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM9c",
+]

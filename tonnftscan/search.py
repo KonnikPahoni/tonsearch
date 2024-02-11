@@ -5,7 +5,7 @@ from django.utils import timezone
 from rest_framework.exceptions import NotFound
 
 from tonnftscan import searchconsole
-from tonnftscan.models import CollectionSearch
+from indicators.models import CollectionIndicators
 from tonnftscan.services import get_collection_for_address_service
 from tonnftscan.settings import TONSEARCH_URL
 
@@ -43,7 +43,7 @@ def sync_google_search_queries():
             logging.error(f"Could not find collection {key}")
             continue
 
-        collection_search, _ = CollectionSearch.objects.update_or_create(
+        collection_search, _ = CollectionIndicators.objects.update_or_create(
             collection=collection,
             defaults={
                 "collection": collection,
@@ -72,7 +72,7 @@ def sync_google_search_queries():
             logging.error(f"Could not find collection {key}")
             continue
 
-        collection_search, _ = CollectionSearch.objects.update_or_create(
+        collection_search, _ = CollectionIndicators.objects.update_or_create(
             collection=collection,
             defaults={
                 "collection": collection,
