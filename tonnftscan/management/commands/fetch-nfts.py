@@ -27,7 +27,7 @@ class Command(BaseCommand):
         logging.info(f"Found {nfts_filterset.count()} NFts to fetch.")
 
         nfts_fetched = 0
-        nfts_to_fetch_max = 50000
+        nfts_to_fetch_max = 25000
 
         for nft in nfts_filterset[:nfts_to_fetch_max]:
             try:
