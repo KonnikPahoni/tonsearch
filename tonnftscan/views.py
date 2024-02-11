@@ -49,8 +49,8 @@ class IndexView(APIView):
         template = loader.get_template("index.html")
 
         collections_filterset = Collection.objects.filter(
-            last_fetched_at__isnull=False, collection_search__isnull=False
-        ).order_by("-collection_search__google_impressions_last_30_days")
+            last_fetched_at__isnull=False, collection_indicators__isnull=False
+        ).order_by("-collection_indicators__google_impressions_last_30_days")
 
         collections_context = [collection.get_context() for collection in collections_filterset[:16]]
 
@@ -227,6 +227,24 @@ class CollectionView(APIView):
         except AttributeError:
             owner_context = None
 
+        try:
+            burn_ratio_percentile = collection.collection_indicators_percentiles.burn_ratio * 100
+        except Exception as e:
+            logging.error(f"Error getting burn ratio percentile: {e}")
+            burn_ratio_percentile = None
+
+        try:
+            spam_factor_percentile = collection.collection_indicators_percentiles.spam_factor * 100
+        except Exception as e:
+            logging.error(f"Error getting spam factor percentile: {e}")
+            spam_factor_percentile = None
+
+        try:
+            spread_ratio_current_percentile = collection.collection_indicators_percentiles.spread_ratio_current * 100
+        except Exception as e:
+            logging.error(f"Error getting spread ratio percentile: {e}")
+            spread_ratio_current_percentile = None
+
         context = {
             **collection_context,
             **base_context,
@@ -235,6 +253,11 @@ class CollectionView(APIView):
             if convert_hex_address_to_user_friendly(collection.address) in REL_NOFOLLOW_EXCEPTIONS
             else False,
             "popular_nfts": popular_nfts,
+            "burn_ratio_percentile": burn_ratio_percentile if burn_ratio_percentile is not None else 0,
+            "spam_factor_percentile": spam_factor_percentile if spam_factor_percentile is not None else 0,
+            "spread_ratio_current_percentile": spread_ratio_current_percentile
+            if spread_ratio_current_percentile is not None
+            else 0,
         }
         logging.info(f"Context for collection: {context}")
 

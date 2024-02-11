@@ -5,10 +5,10 @@ from tonnftscan.models import Collection
 
 class CollectionIndicators(models.Model):
     """
-    Represents a collection search.
+    Stores indicators for a collection.
     """
 
-    collection = models.OneToOneField(Collection, on_delete=models.CASCADE, related_name="collection_search")
+    collection = models.OneToOneField(Collection, on_delete=models.CASCADE, related_name="collection_indicators")
     google_impressions_total = models.IntegerField(default=0, help_text="Number of impressions in Google")
     google_impressions_last_30_days = models.IntegerField(
         default=0, help_text="Number of impressions in Google for the last 30 days"
@@ -24,7 +24,34 @@ class CollectionIndicators(models.Model):
     google_ctr_last_30_days = models.FloatField(default=0, help_text="CTR in Google for the last 30 days")
     google_position_total = models.FloatField(default=0, help_text="Position in Google")
     google_position_last_30_days = models.FloatField(default=0, help_text="Position in Google for the last 30 days")
-    spam_ratio = models.FloatField(default=0, help_text="Spam ratio")
+    burn_ratio = models.FloatField(
+        default=None, help_text="Burned NFTs / total NFTs in the collection", blank=True, null=True
+    )
+    spam_factor = models.FloatField(
+        default=None, help_text="Number of NFTs from collection burned by different users", blank=True, null=True
+    )
+    spread_ratio_current = models.FloatField(
+        default=None,
+        help_text="Spread ratio: number of wallets with NFTs from collection / total number of NFTs",
+        blank=True,
+        null=True,
+    )
+    spread_historical = models.FloatField(
+        default=None, help_text="Number of wallets who owned NFTs over time", blank=True, null=True
+    )
+
+
+class CollectionIndicatorsPercentiles(models.Model):
+    """
+    Stores percentiles for collection indicators.
+    """
+
+    collection = models.OneToOneField(
+        Collection, on_delete=models.CASCADE, related_name="collection_indicators_percentiles"
+    )
+    burn_ratio = models.FloatField(default=None, help_text="Burn ratio percentile", blank=True, null=True)
+    spam_factor = models.FloatField(default=None, help_text="Spam ratio percentile", blank=True, null=True)
+    spread_ratio_current = models.FloatField(default=None, help_text="Spread ratio percentile", blank=True, null=True)
 
 
 class DailyIndicator(models.Model):

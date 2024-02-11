@@ -1,4 +1,5 @@
 import logging
+import time
 
 from django.http import HttpResponse
 
@@ -33,22 +34,21 @@ def fetch_addresses_handler():
         logging.info(f"Address {address_object} processed.")
 
 
-def fetch_nfts_handler():
+def fetch_collection_nfts_handler(collection: Collection):
     """
-    Fetch all nfts from tonscan.
+    Fetch all nfts from a passed collection.
     """
-    for collection in Collection.objects.all():
-        logging.info(f"Fetching NFTs for collection {collection}...")
-        nfts_filterset = NFT.objects.filter(collection=collection, last_fetched_at__isnull=True)
-        for nft in nfts_filterset:
-            try:
-                sale_owner_address = nft.sale["owner"]["address"]
-            except KeyError:
-                sale_owner_address = None
 
-            logging.info(f"Processing nft {nft} for collection {collection}...")
+    logging.info(f"Fetching NFTs for collection {collection}...")
+
+    for nft in collection.nfts.all():
+        try:
             fetch_nft_service(nft)
-            logging.info(f"NFT {nft} for collection {collection} processed.")
+        except Exception as e:
+            logging.error(f"Failed to fetch NFT {nft.address} with error: {e}")
+            time.sleep(2)
+            fetch_nft_service(nft)
+        time.sleep(1)
 
 
 def get_sitemap_handler():
