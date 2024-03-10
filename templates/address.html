@@ -53,9 +53,9 @@
                     <h1 class="display-4 mb-3 break-word">{{ user_friendly_id }}</h1>
                 {% else %}
                     <h1 class="display-4 mb-3">{{ name }}</h1>
-                    <p class="lead text-muted">User-friendly wallet ID: <b>{{ user_friendly_id }}</b></p>
+                    <p class="lead text-muted break-word">User-friendly wallet ID: <b>{{ user_friendly_id }}</b></p>
                 {% endif %}
-                <p class="lead text-muted">HEX wallet ID: <b>{{ hex_id }}</b></p>
+                <p class="lead text-muted break-word">HEX wallet ID: <b>{{ hex_id }}</b></p>
             </div>
 
             {% if icon is not None %}

@@ -37,9 +37,9 @@
             <div class="container mt-4">
                 <span class="badge badge-primary">NFT</span>
                 <h1 class="display-4 mb-3">{{ name }}</h1>
-                <span class="lead text-muted">User-friendly NFT ID: <b>{{ user_friendly_id }}</b></span>
+                <span class="lead text-muted break-word">User-friendly NFT ID: <b>{{ user_friendly_id }}</b></span>
                 <br>
-                <span class="lead text-muted">HEX NFT ID: <b>{{ hex_id }}</b></span>
+                <span class="lead text-muted break-word">HEX NFT ID: <b>{{ hex_id }}</b></span>
             </div>
 
             <div class="container my-4 text-center">
@@ -76,7 +76,7 @@
                 </p>
 
                 {% if collection_owner is not None %}
-                    <p class="lead">
+                    <p class="lead break-word">
                         Collection author: <a class="navlink"
                                               href="{{ site_url }}/address/{{ collection_owner.user_friendly_id }}">
 
