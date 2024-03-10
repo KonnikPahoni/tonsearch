@@ -196,12 +196,12 @@ class NFT(models.Model):
             "sale": self.sale,
             "verified": self.verified,
             "approved_by": approved_by,
-            "transactions_num": self.transactions.count(),
+            "transactions_num": self.transactions.filter(status='ok').count(),
         }
 
         if with_collection is True:
             context["collection"] = self.collection.get_context()
-            context["transactions"] = [transaction.get_context() for transaction in self.transactions.all()]
+            context["transactions"] = [transaction.get_context() for transaction in self.transactions.filter(status='ok')]
 
         return context
 
