@@ -12,8 +12,7 @@ EXPOSE 8008
 COPY . /
 RUN ls var
 
-RUN chmod 0644 cronjobs
-
+RUN chmod 0644 cronjobs && chmod +x renew.sh
 
 RUN apt-get update && apt-get install -y cron
 RUN crontab /cronjobs
