@@ -1,7 +1,6 @@
 #!/bin/bash
 
-service nginx stop
-
+/etc/init.d/nginx stop
 certbot certonly --standalone -d tonsearch.org
 
-service nginx start
+/etc/init.d/nginx start
