@@ -23,4 +23,4 @@ We use Black code style with settings in `pyproject.toml`. Run `black .` to lint
 #### Available commands
 
 - `python manage.py createsuperuser` to crate superuser
-- `certbot certonly --standalone -d tonsearch.org`
+- `certbot certonly --standalone -d tonsearch.org --dry-run`
