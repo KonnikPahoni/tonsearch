@@ -1,6 +1,6 @@
 # TON NFT Scan
 
-SQL database of TON NFTs.
+SQL database of TON NFTs
 
 #### Useful links
 
